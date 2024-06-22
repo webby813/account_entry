@@ -58,7 +58,7 @@ public class Purchase extends javax.swing.JFrame {
         jTextField8.setText("jTextField8");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(800, 600));
+        setPreferredSize(new java.awt.Dimension(800, 650));
 
         jLabel7.setText("Transaction with");
 

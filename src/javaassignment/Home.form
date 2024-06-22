@@ -3,9 +3,6 @@
 <Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
-    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[1000, 800]"/>
-    </Property>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -46,10 +43,10 @@
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="jButton12" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="jButton11" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="jButton10" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="jButton9" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="ComPageBtn" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="IvtReportPageBtn" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="ItemGrpPage" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="ItemsPage" alignment="0" max="32767" attributes="0"/>
                                   <Component id="PurchasePageBtn" alignment="0" max="32767" attributes="0"/>
                                   <Component id="InvoicePageBtn" alignment="0" max="32767" attributes="0"/>
                                   <Component id="ReportPageBtn" alignment="0" max="32767" attributes="0"/>
@@ -91,13 +88,13 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="PurchasePageBtn" min="-2" pref="32" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jButton9" min="-2" pref="32" max="-2" attributes="0"/>
+              <Component id="ItemsPage" min="-2" pref="32" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jButton10" min="-2" pref="32" max="-2" attributes="0"/>
+              <Component id="ItemGrpPage" min="-2" pref="32" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jButton11" min="-2" pref="32" max="-2" attributes="0"/>
+              <Component id="IvtReportPageBtn" min="-2" pref="32" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jButton12" min="-2" pref="32" max="-2" attributes="0"/>
+              <Component id="ComPageBtn" min="-2" pref="32" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jButton13" min="-2" pref="32" max="-2" attributes="0"/>
               <EmptySpace pref="46" max="32767" attributes="0"/>
@@ -131,9 +128,6 @@
     <Component class="javax.swing.JButton" name="ReceivePageBtn">
       <Properties>
         <Property name="text" type="java.lang.String" value="Receive"/>
-        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[72, 23]"/>
-        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ReceivePageBtnActionPerformed"/>
@@ -164,9 +158,6 @@
     <Component class="javax.swing.JButton" name="ReportPageBtn">
       <Properties>
         <Property name="text" type="java.lang.String" value="Report"/>
-        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[72, 23]"/>
-        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ReportPageBtnActionPerformed"/>
@@ -175,9 +166,6 @@
     <Component class="javax.swing.JButton" name="InvoicePageBtn">
       <Properties>
         <Property name="text" type="java.lang.String" value="Invoice"/>
-        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[72, 23]"/>
-        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="InvoicePageBtnActionPerformed"/>
@@ -194,37 +182,40 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="PurchasePageBtnActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton9">
+    <Component class="javax.swing.JButton" name="ItemsPage">
       <Properties>
         <Property name="text" type="java.lang.String" value="Items"/>
-        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[72, 23]"/>
-        </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ItemsPageActionPerformed"/>
+      </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton10">
+    <Component class="javax.swing.JButton" name="ItemGrpPage">
       <Properties>
         <Property name="text" type="java.lang.String" value="Item Group"/>
-        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[90, 23]"/>
-        </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ItemGrpPageActionPerformed"/>
+      </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton11">
+    <Component class="javax.swing.JButton" name="IvtReportPageBtn">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Invent Report"/>
-        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[101, 23]"/>
-        </Property>
+        <Property name="text" type="java.lang.String" value="Inventory Report"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="IvtReportPageBtnActionPerformed"/>
+      </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton12">
+    <Component class="javax.swing.JButton" name="ComPageBtn">
       <Properties>
         <Property name="text" type="java.lang.String" value="Company Info"/>
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[104, 23]"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ComPageBtnActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
       <Properties>
@@ -253,6 +244,9 @@
           <Dimension value="[104, 23]"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton13ActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>
