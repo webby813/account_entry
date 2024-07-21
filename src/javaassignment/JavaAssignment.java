@@ -7,7 +7,6 @@ public class JavaAssignment {
         //Run UI
         java.awt.EventQueue.invokeLater(() -> {
                 JFrame index = new Login();
-                System.out.println("testing");
                 index.setVisible(true);
         });
     }
