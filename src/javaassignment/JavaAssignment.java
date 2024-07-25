@@ -9,6 +9,7 @@ public class JavaAssignment {
                 JFrame index = new Login();
                 System.out.println("testing");
                 index.setVisible(true);
+                
         });
     }
 }
