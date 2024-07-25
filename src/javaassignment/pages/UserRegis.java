@@ -156,6 +156,12 @@ public class UserRegis extends javax.swing.JFrame {
             DefaultTableModel model = (DefaultTableModel) userTable.getModel();
             model.addRow(new Object[]{username, role, password});
             JOptionPane.showMessageDialog(this, "User created successfully!");
+
+            // Clear the input fields
+            Name.setText("");
+            Pass.setText("");
+            ConfirmPass.setText("");
+            Roles.setSelectedIndex(0);
         } else {
             JOptionPane.showMessageDialog(this, "Passwords do not match!", "Error", JOptionPane.ERROR_MESSAGE);
         }
