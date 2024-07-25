@@ -1,13 +1,15 @@
 package javaassignment;
 
-import javax.swing.JFrame;
+import db_objects.Authentication;
 
 public class Login extends javax.swing.JFrame {
 
+    private Authentication auth;
     public Login() {
         initComponents();
+        auth = new Authentication();
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -74,20 +76,9 @@ public class Login extends javax.swing.JFrame {
     private void LoginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginBtnActionPerformed
         String username = Name.getText();
         String password = new String(Pass.getPassword());
-        UserRole role = null;
-        if ("auditor".equals(username)) {
-            role = UserRole.AUDITOR;
-        } else if ("accountant".equals(username)) {
-            role = UserRole.ACCOUNTANT;
-        }
 
-        if (role != null) {
-            JFrame home = new Home(role);
-            this.dispose();
-            home.setVisible(true);
-        } else {
-            System.out.println("Invalid user");
-        }
+        auth.login(username, password, this);
+
     }//GEN-LAST:event_LoginBtnActionPerformed
 
     public static void main(String args[]) {
