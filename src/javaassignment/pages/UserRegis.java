@@ -54,10 +54,7 @@ public class UserRegis extends javax.swing.JFrame {
 
         userTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
                 "Username", "Role", "Password"
@@ -70,7 +67,7 @@ public class UserRegis extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel5.setText("Roles");
 
-        Roles.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        Roles.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Accountant", "Auditor" }));
         Roles.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 RolesActionPerformed(evt);
@@ -99,7 +96,7 @@ public class UserRegis extends javax.swing.JFrame {
                         .addGap(34, 34, 34)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(Roles, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(ConfirmPass, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
+                            .addComponent(ConfirmPass)
                             .addComponent(Name)
                             .addComponent(Pass)))
                     .addGroup(layout.createSequentialGroup()
@@ -157,7 +154,7 @@ public class UserRegis extends javax.swing.JFrame {
 
         if (password.equals(confirmPassword)) {
             DefaultTableModel model = (DefaultTableModel) userTable.getModel();
-            model.addRow(new Object[]{username, role});
+            model.addRow(new Object[]{username, role, password});
             JOptionPane.showMessageDialog(this, "User created successfully!");
         } else {
             JOptionPane.showMessageDialog(this, "Passwords do not match!", "Error", JOptionPane.ERROR_MESSAGE);
@@ -175,27 +172,7 @@ public class UserRegis extends javax.swing.JFrame {
  
     
     public static void main(String args[]) {
-        ///COMMIT TESTING
-//        try{
-//            for(javax.swing.UIManager.LookAndFeelInfo info :javax.swing.UIManager.getInstalledLookAndFeels()){
-//                if("Nimbus".equals(info.getName())){
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    break;
-//                }
-//            }
-//        }catch(ClassNotFoundException ex){
-//            java.util.logging.Logger.getLogger(UserRegis.class.getName()).log(java.util.SEVERE,null,ex);
-//        }catch(InstantiationException ex){
-//            java.util.logging.Logger.getLogger(UserRegis.class.getName()).log(java.util.SEVERE,null,ex);
-//        }catch(IllegalAccessException ex){
-//            java.util.logging.Logger.getLogger(UserRegis.class.getName()).log(java.util.SEVERE,null,ex);
-//        }catch(javax.swing.UnsupportedLookAndFeelException ex){
-//            java.util.logging.Logger.getLogger(UserRegis.class.getName()).log(java.util.SEVERE,null,ex);
-//        }
-        
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
+        SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 new UserRegis().setVisible(true);
             }
