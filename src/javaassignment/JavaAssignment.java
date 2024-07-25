@@ -8,6 +8,7 @@ public class JavaAssignment {
         java.awt.EventQueue.invokeLater(() -> {
                 JFrame index = new Login();
                 index.setVisible(true);
+                
         });
     }
 }
