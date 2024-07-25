@@ -1,11 +1,43 @@
 package javaassignment;
 
+import static javaassignment.UserRole.ACCOUNTANT;
+import static javaassignment.UserRole.AUDITOR;
 import javax.swing.JFrame;
 
 public class Home extends javax.swing.JFrame {
+    private UserRole userRole;
 
-    public Home() {
+    public Home(UserRole role) {
+        this.userRole = role;
+        System.out.println("UserRole received: " + this.userRole);
         initComponents();
+        permissionDistribute(role);
+    }
+    
+    private void permissionDistribute(UserRole role){
+        switch(role){
+            case AUDITOR:
+                System.out.println(role);
+                auditorCantVisit();
+                break;
+            case ACCOUNTANT:
+                System.out.println(role);
+                accountantCantVisit();
+                break;
+            default:
+                System.out.println("Empty");
+        }
+    }
+    
+    private void accountantCantVisit(){
+        IvtReportPageBtn.setVisible(false);
+        ComPageBtn.setVisible(false);
+    }
+    
+    private void auditorCantVisit(){
+        PmtPageBtn.setVisible(false);
+        ReceivePageBtn.setVisible(false);
+        ///Another one is LedgerList allowed to visit but not add button
     }
 
     @SuppressWarnings("unchecked")
@@ -164,8 +196,8 @@ public class Home extends javax.swing.JFrame {
                                     .addComponent(LedgerGPageBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(LedgerLPageBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(ReceivePageBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(PmtPageBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jButton13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addComponent(jButton13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(PmtPageBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(0, 0, Short.MAX_VALUE)))))
                 .addGap(81, 81, 81))
         );
@@ -222,7 +254,7 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_ReceivePageBtnActionPerformed
 
     private void LedgerLPageBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LedgerLPageBtnActionPerformed
-        JFrame route = new javaassignment.pages.LedgerList();
+        JFrame route = new javaassignment.pages.LedgerList(userRole);
         route.setVisible(true);
     }//GEN-LAST:event_LedgerLPageBtnActionPerformed
 
@@ -270,38 +302,12 @@ public class Home extends javax.swing.JFrame {
         System.exit(1);
     }//GEN-LAST:event_jButton13ActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Home().setVisible(true);
+                // Create a UserRole instance, for example, UserRole.AUDITOR
+                UserRole role = UserRole.AUDITOR;
+                new Home(role).setVisible(true);
             }
         });
     }
