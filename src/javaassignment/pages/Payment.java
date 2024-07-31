@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import javax.swing.JOptionPane;
 
 public class Payment extends javax.swing.JFrame {
-    
     Timestamp currentTime;
 
     public Payment() {
@@ -56,7 +55,7 @@ public class Payment extends javax.swing.JFrame {
 
         jLabel2.setText("Voucher No : ");
 
-        voucher_Type.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Payment", "Expenses", " " }));
+        voucher_Type.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Payment", "Receive", " " }));
         voucher_Type.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 voucher_TypeActionPerformed(evt);
@@ -232,17 +231,16 @@ public class Payment extends javax.swing.JFrame {
     }//GEN-LAST:event_voucher_TypeActionPerformed
 
     private void submitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitActionPerformed
-        // Retrieve form data
         String voucherType = voucher_Type.getSelectedItem().toString();
         String ledger = ledger_list.getSelectedItem().toString();
         String narrationText = narration.getText().trim();
         String chequeNoText = cheque_No.getText().trim();
         String amountText = amount.getText().trim();
+        String transferType = transfer_Type.getSelectedItem().toString();
 
         int chequeNo = 0;
         int amountValue = 0;
 
-        // Parse chequeNo and amountValue
         try {
             if (!chequeNoText.isEmpty()) {
                 chequeNo = Integer.parseInt(chequeNoText);
@@ -255,17 +253,14 @@ public class Payment extends javax.swing.JFrame {
             return;
         }
 
-        // Check for empty required fields
         if (voucherType.isEmpty() || ledger.isEmpty() || narrationText.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please fill in all required fields.", "Validation Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Create data object and insert voucher
         Create_Data createData = new Create_Data();
-        boolean success = createData.create_voucher(voucherType, currentTime, ledger, chequeNo, currentTime, narrationText, amountValue);
+        boolean success = createData.create_voucher(voucherType, currentTime, ledger, "payment", chequeNo, currentTime, narrationText, amountValue);
 
-        // Show success or error message
         if (success) {
             JOptionPane.showMessageDialog(this, "Record inserted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
         } else {
