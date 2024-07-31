@@ -64,7 +64,7 @@ public class LedgerList extends javax.swing.JFrame {
     
     public void populateLedgerList() {
         Retrieve_Data retrieveData = new Retrieve_Data();
-        List<String> ledgers = retrieveData.fetchLedgers();
+        List<String> ledgers = retrieveData.fetchLedgerGroup();
         selected_Group.removeAllItems();
         for (String ledger : ledgers) {
             selected_Group.addItem(ledger);
