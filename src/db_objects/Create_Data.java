@@ -45,8 +45,8 @@ public class Create_Data {
             System.out.println("Error: " + errorMessage);
             return false;
         }
-
         String sql = "INSERT INTO voucher(voucher_Type, posting_Date, ledger_Name, transfer_Type, cheque_No, cheque_Date, narration, amount) VALUES(?,?,?,?,?,?,?,?)";
+
         try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/acc_entry", "root", "");
              PreparedStatement cstmt = con.prepareStatement(sql)) {
 
@@ -68,4 +68,40 @@ public class Create_Data {
             return false;
         }
     }
+    
+    public boolean CreateLedger(String new_Ledger, String acc_Group) {
+        String sql = "INSERT INTO ledger (ledger_Name, acc_Group) VALUES (?, ?)";
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/acc_entry", "root", "");
+             PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+            pstmt.setString(1, new_Ledger);
+            pstmt.setString(2, acc_Group);
+            int rowsInserted = pstmt.executeUpdate();
+            System.out.println(rowsInserted + " record inserted");
+            return rowsInserted > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean CreateLedgerGroup(String group_Name) {
+        String sql = "INSERT INTO ledger (ledger_Name, acc_Group) VALUES (?,?)";
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/acc_entry", "root", "");
+             PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+            pstmt.setString(1, group_Name); 
+            pstmt.setString(2, group_Name);
+            int rowsInserted = pstmt.executeUpdate();
+            System.out.println(rowsInserted + " record inserted");
+            return rowsInserted > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
 }

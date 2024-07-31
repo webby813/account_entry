@@ -1,8 +1,10 @@
 package javaassignment.pages;
 
 import db_objects.Create_Data;
+import db_objects.Retrieve_Data;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import javax.swing.JOptionPane;
 
 public class Payment extends javax.swing.JFrame {
@@ -17,6 +19,16 @@ public class Payment extends javax.swing.JFrame {
         cheque_Date.setText(formattedDate);
         voucher_No.setEditable(false);
         cheque_Date.setEditable(false);
+        populateLedgerList();
+    }
+    
+    private void populateLedgerList() {
+        Retrieve_Data retrieveData = new Retrieve_Data();
+        List<String> ledgers = retrieveData.fetchLedgers();
+        ledger_list.removeAllItems();
+        for (String ledger : ledgers) {
+            ledger_list.addItem(ledger);
+        }
     }
     
     @SuppressWarnings("unchecked")
@@ -74,8 +86,6 @@ public class Payment extends javax.swing.JFrame {
         jLabel8.setText("Chq. No");
 
         jLabel9.setText("Narration");
-
-        ledger_list.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select ledger", "Berjaya Food", "Ledger 3" }));
 
         transfer_Type.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cash", "Bank" }));
 
