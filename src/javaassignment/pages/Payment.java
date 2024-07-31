@@ -15,16 +15,18 @@ public class Payment extends javax.swing.JFrame {
         currentTime = new Timestamp(System.currentTimeMillis());
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDate = dateFormat.format(currentTime);
+        
         posting_Date.setText(formattedDate);
         cheque_Date.setText(formattedDate);
         voucher_No.setEditable(false);
         cheque_Date.setEditable(false);
+        
         populateLedgerList();
     }
     
     private void populateLedgerList() {
         Retrieve_Data retrieveData = new Retrieve_Data();
-        List<String> ledgers = retrieveData.fetchLedgers();
+        List<String> ledgers = retrieveData.fetchLedgerGroup();
         ledger_list.removeAllItems();
         for (String ledger : ledgers) {
             ledger_list.addItem(ledger);

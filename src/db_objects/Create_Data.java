@@ -48,18 +48,18 @@ public class Create_Data {
         String sql = "INSERT INTO voucher(voucher_Type, posting_Date, ledger_Name, transfer_Type, cheque_No, cheque_Date, narration, amount) VALUES(?,?,?,?,?,?,?,?)";
 
         try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/acc_entry", "root", "");
-             PreparedStatement cstmt = con.prepareStatement(sql)) {
+             PreparedStatement pstmt = con.prepareStatement(sql)) {
 
-            cstmt.setString(1, voucher_Type);
-            cstmt.setTimestamp(2, posting_Date);
-            cstmt.setString(3, selectedLedger);
-            cstmt.setString(4, transferType);
-            cstmt.setInt(5, cheque_No);
-            cstmt.setTimestamp(6, cheque_Date);
-            cstmt.setString(7, narration);
-            cstmt.setInt(8, amount);
+            pstmt.setString(1, voucher_Type);
+            pstmt.setTimestamp(2, posting_Date);
+            pstmt.setString(3, selectedLedger);
+            pstmt.setString(4, transferType);
+            pstmt.setInt(5, cheque_No);
+            pstmt.setTimestamp(6, cheque_Date);
+            pstmt.setString(7, narration);
+            pstmt.setInt(8, amount);
 
-            int rowsInserted = cstmt.executeUpdate();
+            int rowsInserted = pstmt.executeUpdate();
             System.out.println(rowsInserted + " record inserted");
             return true;
 
@@ -103,5 +103,52 @@ public class Create_Data {
         }
     }
 
+    public boolean SaveInvoiceRecord(Timestamp time, Timestamp chequeDate, String invoiceType, String account, String transactionWith, String narration, String receiveType, int chequeNo, int total) {
+        String sql = "INSERT INTO invoice(date, invoice_Type, account, transaction_with, narration, receive_Type, total, cheque_Date, cheque_No) VALUES(?,?,?,?,?,?,?,?,?)";
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/acc_entry", "root", "");
+             PreparedStatement pstmt = con.prepareStatement(sql)) {
 
+            pstmt.setTimestamp(1, time);
+            pstmt.setString(2, invoiceType);
+            pstmt.setString(3, account);
+            pstmt.setString(4, transactionWith);
+            pstmt.setString(5, narration);
+            pstmt.setString(6, receiveType);
+            pstmt.setInt(7, total);
+            pstmt.setTimestamp(8, chequeDate);
+            pstmt.setInt(9, chequeNo);
+
+            int rowsInserted = pstmt.executeUpdate();
+            System.out.println(rowsInserted + " record inserted");
+            return rowsInserted > 0;
+
+        } catch (Exception e) {
+            System.out.println("Database error: " + e.getMessage());
+            return false;
+        }
+    }
+    
+    public boolean SavePurchaseRecord(Timestamp time, Timestamp chequeDate, String account, String transaction_with, String tranx_Type, String narration, int cheque_No, int total) {
+        String sql = "INSERT INTO purchase(date, cheque_Date, account, transaction_with, tranx_Type, narration, cheque_No, total) VALUES(?,?,?,?,?,?,?,?)";
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/acc_entry", "root", "");
+             PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+            pstmt.setTimestamp(1, time);
+            pstmt.setTimestamp(2, chequeDate);
+            pstmt.setString(3, transaction_with);
+            pstmt.setString(4, account);
+            pstmt.setString(5, tranx_Type);
+            pstmt.setString(6, narration);
+            pstmt.setInt(7, cheque_No);
+            pstmt.setInt(8, total);
+
+            int rowsInserted = pstmt.executeUpdate();
+            System.out.println(rowsInserted + " record inserted");
+            return rowsInserted > 0;
+
+        } catch (Exception e) {
+            System.out.println("Database error: " + e.getMessage());
+            return false;
+        }
+    }
 }
