@@ -1,8 +1,10 @@
 package javaassignment.pages;
 
 import db_objects.Create_Data;
+import db_objects.Retrieve_Data;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -18,6 +20,16 @@ public class Receive extends javax.swing.JFrame {
         cheque_Date.setText(formattedDate);
         voucher_No.setEditable(false);
         cheque_Date.setEditable(false);
+        populateLedgerList();
+    }
+    
+    private void populateLedgerList() {
+        Retrieve_Data retrieveData = new Retrieve_Data();
+        List<String> ledgers = retrieveData.fetchLedgers();
+        ledger_list.removeAllItems();
+        for (String ledger : ledgers) {
+            ledger_list.addItem(ledger);
+        }
     }
 
     @SuppressWarnings("unchecked")
