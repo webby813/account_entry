@@ -82,8 +82,6 @@ public class LedgerList extends javax.swing.JFrame {
         Ledger_Table = new javax.swing.JTable();
         new_ledger = new javax.swing.JTextField();
         selected_Group = new javax.swing.JComboBox<>();
-        previousbtn = new javax.swing.JButton();
-        next_btn = new javax.swing.JButton();
         addLedgerBtn = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
@@ -122,15 +120,6 @@ public class LedgerList extends javax.swing.JFrame {
             }
         });
 
-        previousbtn.setText("<");
-        previousbtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                previousbtnActionPerformed(evt);
-            }
-        });
-
-        next_btn.setText(">");
-
         addLedgerBtn.setText("Add");
         addLedgerBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -163,16 +152,11 @@ public class LedgerList extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(addLedgerBtn)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jButton4))
-                                    .addComponent(previousbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(addLedgerBtn)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton4)
                                 .addGap(29, 29, 29)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jButton5)
-                                    .addComponent(next_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(jButton5))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(layout.createSequentialGroup()
@@ -206,11 +190,7 @@ public class LedgerList extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
                             .addComponent(selected_Group, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(58, 58, 58)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(previousbtn)
-                            .addComponent(next_btn))
-                        .addGap(25, 25, 25)
+                        .addGap(106, 106, 106)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jButton4)
                             .addComponent(addLedgerBtn)
@@ -224,10 +204,6 @@ public class LedgerList extends javax.swing.JFrame {
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         this.dispose();
     }//GEN-LAST:event_jButton5ActionPerformed
-
-    private void previousbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previousbtnActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_previousbtnActionPerformed
 
     private void addLedgerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addLedgerBtnActionPerformed
         String newLedger = new_ledger.getText().trim();
@@ -283,8 +259,6 @@ public class LedgerList extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField new_ledger;
-    private javax.swing.JButton next_btn;
-    private javax.swing.JButton previousbtn;
     private javax.swing.JComboBox<String> selected_Group;
     // End of variables declaration//GEN-END:variables
 }
