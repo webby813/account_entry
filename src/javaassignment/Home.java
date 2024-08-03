@@ -37,7 +37,6 @@ public class Home extends javax.swing.JFrame {
     private void auditorCantVisit(){
         PmtPageBtn.setVisible(false);
         ReceivePageBtn.setVisible(false);
-        ///Another one is LedgerList allowed to visit but not add button
     }
 
     @SuppressWarnings("unchecked")
@@ -284,7 +283,7 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_ItemsPageActionPerformed
 
     private void ItemGrpPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ItemGrpPageActionPerformed
-        JFrame route = new javaassignment.pages.Items();
+        JFrame route = new javaassignment.pages.ItemGroup();
         route.setVisible(true);
     }//GEN-LAST:event_ItemGrpPageActionPerformed
 
