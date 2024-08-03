@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Retrieve_Data {
+    
     public List<String> fetchLedgerGroup() {
         List<String> ledgers = new ArrayList<>();
         Connection con = null;
@@ -70,33 +71,49 @@ public class Retrieve_Data {
         return ledgers;
     }
     
+    public List<String> fetchItemGroup() {
+        List<String> itemGroups = new ArrayList<>();
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/acc_entry", "root", "");
+            Statement stmt = con.createStatement();
+
+            String query = "SELECT DISTINCT item_Group FROM inventory";
+            ResultSet rs = stmt.executeQuery(query);
+
+            while (rs.next()) {
+                itemGroups.add(rs.getString("item_Group"));
+            }
+
+            con.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return itemGroups;
+    }
     
     public static int fetchNextNumber(String tableName, String columnName) {
         Connection con = null;
         Statement stmt = null;
         ResultSet rs = null;
-        int nextNumber = 1; // Default value in case the table is empty
+        int nextNumber = 1;
 
         try {
-            // Load MySQL JDBC driver
             Class.forName("com.mysql.cj.jdbc.Driver");
             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/acc_entry", "root", "");
             stmt = con.createStatement();
 
-            // SQL query to select the maximum number from the specified table and column
             String query = String.format("SELECT MAX(%s) AS max_number FROM %s", columnName, tableName);
             rs = stmt.executeQuery(query);
 
             if (rs.next()) {
-                // Get the maximum number from the result set
                 int maxNumber = rs.getInt("max_number");
-                // Increment to get the next number
                 nextNumber = maxNumber + 1;
             }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            // Close resources
             try {
                 if (rs != null) rs.close();
                 if (stmt != null) stmt.close();
@@ -105,8 +122,9 @@ public class Retrieve_Data {
                 e.printStackTrace();
             }
         }
-
         return nextNumber;
     }
+    
+    
     
 }
