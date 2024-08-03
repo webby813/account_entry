@@ -70,4 +70,43 @@ public class Retrieve_Data {
         return ledgers;
     }
     
+    
+    public static int fetchNextNumber(String tableName, String columnName) {
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        int nextNumber = 1; // Default value in case the table is empty
+
+        try {
+            // Load MySQL JDBC driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/acc_entry", "root", "");
+            stmt = con.createStatement();
+
+            // SQL query to select the maximum number from the specified table and column
+            String query = String.format("SELECT MAX(%s) AS max_number FROM %s", columnName, tableName);
+            rs = stmt.executeQuery(query);
+
+            if (rs.next()) {
+                // Get the maximum number from the result set
+                int maxNumber = rs.getInt("max_number");
+                // Increment to get the next number
+                nextNumber = maxNumber + 1;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // Close resources
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+                if (con != null) con.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return nextNumber;
+    }
+    
 }

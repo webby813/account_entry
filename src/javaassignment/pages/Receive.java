@@ -2,6 +2,7 @@ package javaassignment.pages;
 
 import db_objects.Create_Data;
 import db_objects.Retrieve_Data;
+import static db_objects.Retrieve_Data.fetchNextNumber;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -16,10 +17,15 @@ public class Receive extends javax.swing.JFrame {
         currentTime = new Timestamp(System.currentTimeMillis());
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDate = dateFormat.format(currentTime);
+        
         posting_Date.setText(formattedDate);
         cheque_Date.setText(formattedDate);
         voucher_No.setEditable(false);
         cheque_Date.setEditable(false);
+        
+        int nextVoucherNo = fetchNextNumber("voucher", "voucher_No");
+        voucher_No.setText(String.valueOf(nextVoucherNo));
+        
         populateLedgerList();
     }
     

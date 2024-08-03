@@ -3,6 +3,7 @@ package javaassignment.pages;
 import db_objects.Create_Data;
 import db_objects.CustomTableModel;
 import db_objects.Retrieve_Data;
+import static db_objects.Retrieve_Data.fetchNextNumber;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -22,6 +23,9 @@ public class Purchase extends javax.swing.JFrame {
         cheque_Date.setText(formattedDate);
         voucher_No.setEditable(false);
         purchase_Date.setEditable(false);
+        
+        int nextVoucherNo = fetchNextNumber("purchase", "voucher_No");
+        voucher_No.setText(String.valueOf(nextVoucherNo));
         
         populateLedgerList();
     }
