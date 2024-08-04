@@ -7,16 +7,23 @@ import static db_objects.Retrieve_Data.fetchNextNumber;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import javaassignment.UserRole;
+import static javaassignment.UserRole.ACCOUNTANT;
+import static javaassignment.UserRole.AUDITOR;
 import javax.swing.JOptionPane;
 
 public class Invoice extends javax.swing.JFrame {
     Timestamp currentTime;
+    private UserRole userRole;
     private int currentVoucherNo;
     private int nextVoucherNo;
     private String formattedDate;
     
-    public Invoice() {
+    public Invoice(UserRole role) {
         initComponents();
+        this.userRole = role;
+        permissionDistribute(role);
+        
         currentTime = new Timestamp(System.currentTimeMillis());
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         formattedDate = dateFormat.format(currentTime);
@@ -34,6 +41,21 @@ public class Invoice extends javax.swing.JFrame {
         voucher_No.setText(String.valueOf(nextVoucherNo));
         
         populateLedgerList();
+    }
+    
+    private void permissionDistribute(UserRole role){
+        switch(role){
+            case AUDITOR -> {
+                auditorCantVisit();
+            }
+            case ACCOUNTANT -> {
+            }
+            default -> System.out.println("Empty");
+        }
+    }
+    
+    private void auditorCantVisit(){
+        Save.setVisible(false);
     }
     
     private void populateLedgerList() {
@@ -402,7 +424,8 @@ public class Invoice extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Invoice().setVisible(true);
+                UserRole role = UserRole.AUDITOR;
+                new Invoice(role).setVisible(true);
             }
         });
     }

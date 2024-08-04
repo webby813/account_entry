@@ -7,16 +7,23 @@ import static db_objects.Retrieve_Data.fetchNextNumber;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import javaassignment.UserRole;
+import static javaassignment.UserRole.ACCOUNTANT;
+import static javaassignment.UserRole.AUDITOR;
 import javax.swing.JOptionPane;
 
 public class Purchase extends javax.swing.JFrame {
     Timestamp currentTime;
+    private UserRole userRole;
     private int currentVoucherNo;
     private int nextVoucherNo;
     private String formattedDate;
     
-    public Purchase() {
+    public Purchase(UserRole role) {
         initComponents();
+        this.userRole = role;
+        permissionDistribute(role);
+        
         currentTime = new Timestamp(System.currentTimeMillis());
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         formattedDate = dateFormat.format(currentTime);
@@ -36,6 +43,21 @@ public class Purchase extends javax.swing.JFrame {
         populateLedgerList();
     }
     
+    private void permissionDistribute(UserRole role){
+        switch(role){
+            case AUDITOR -> {
+                auditorCantVisit();
+            }
+            case ACCOUNTANT -> {
+            }
+            default -> System.out.println("Empty");
+        }
+    }
+    
+    private void auditorCantVisit(){
+        Save.setVisible(false);
+    }
+    
     private void populateLedgerList() {
         Retrieve_Data retrieveData = new Retrieve_Data();
         List<String> ledgers = retrieveData.fetchLedgers();
@@ -45,7 +67,7 @@ public class Purchase extends javax.swing.JFrame {
         }
     }
     
-        private void populateFieldsWithVoucherData(int voucherNo) {
+    private void populateFieldsWithVoucherData(int voucherNo) {
         Retrieve_Data retrieveData = new Retrieve_Data();
         List<String> voucherData = retrieveData.fetchPurchaseData(voucherNo);
         if (!voucherData.isEmpty()) {
@@ -401,7 +423,8 @@ public class Purchase extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Purchase().setVisible(true);
+                UserRole role = UserRole.AUDITOR;
+                new Purchase(role).setVisible(true);
             }
         });
     }

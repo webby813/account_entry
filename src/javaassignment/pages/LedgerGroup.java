@@ -5,14 +5,21 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import javaassignment.UserRole;
+import static javaassignment.UserRole.ACCOUNTANT;
+import static javaassignment.UserRole.AUDITOR;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class LedgerGroup extends javax.swing.JFrame {
-
-    public LedgerGroup() {
+    private UserRole userRole;
+    
+    public LedgerGroup(UserRole role) {
         initComponents();
         fetchData();
+        
+        this.userRole = role;
+        permissionDistribute(role);
     }
     
     private void fetchData() {
@@ -34,6 +41,22 @@ public class LedgerGroup extends javax.swing.JFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    private void permissionDistribute(UserRole role){
+        switch(role){
+            case AUDITOR -> {
+                System.out.println(role);
+                auditorCantVisit();
+            }
+            case ACCOUNTANT -> {
+            }
+            default -> System.out.println("Empty");
+        }
+    }
+    
+    private void auditorCantVisit(){
+        addGroupBtn.setVisible(false);
     }
 
     @SuppressWarnings("unchecked")
@@ -166,7 +189,8 @@ public class LedgerGroup extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new LedgerGroup().setVisible(true);
+                UserRole role = UserRole.AUDITOR;
+                new LedgerGroup(role).setVisible(true);
             }
         });
     }
