@@ -5,14 +5,36 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import javaassignment.UserRole;
+import static javaassignment.UserRole.ACCOUNTANT;
+import static javaassignment.UserRole.AUDITOR;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class ItemGroup extends javax.swing.JFrame {
-
-    public ItemGroup() {    
+    private UserRole userRole;
+    
+    public ItemGroup(UserRole role) {    
         initComponents();
+        this.userRole = role;
+        permissionDistribute(role);
+        
         fetchData();
+    }
+    
+    private void permissionDistribute(UserRole role){
+        switch(role){
+            case AUDITOR -> {
+                auditorCantVisit();
+            }
+            case ACCOUNTANT -> {
+            }
+            default -> System.out.println("Empty");
+        }
+    }
+    
+    private void auditorCantVisit(){
+        addBtn.setVisible(false);
     }
     
     private void fetchData() {
@@ -170,7 +192,8 @@ public class ItemGroup extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ItemGroup().setVisible(true);
+                UserRole role = UserRole.AUDITOR;
+                new ItemGroup(role).setVisible(true);
             }
         });
     }

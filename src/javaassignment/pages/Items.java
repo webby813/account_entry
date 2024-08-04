@@ -8,16 +8,38 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.List;
+import javaassignment.UserRole;
+import static javaassignment.UserRole.ACCOUNTANT;
+import static javaassignment.UserRole.AUDITOR;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 
 public final class Items extends javax.swing.JFrame {
+    private UserRole userRole;
 
-    public Items() {
+    public Items(UserRole role) {
         initComponents();
+        this.userRole = role;
+        permissionDistribute(role);
+        
         fetchData();
         populateItemGroupList();
+    }
+    
+    private void permissionDistribute(UserRole role){
+        switch(role){
+            case AUDITOR -> {
+                auditorCantVisit();
+            }
+            case ACCOUNTANT -> {
+            }
+            default -> System.out.println("Empty");
+        }
+    }
+    
+    private void auditorCantVisit(){
+        addBtn.setVisible(false);
     }
 
     private void fetchData() {
@@ -231,7 +253,8 @@ public final class Items extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Items().setVisible(true);
+                UserRole role = UserRole.AUDITOR;
+                new Items(role).setVisible(true);
             }
         });
     }
