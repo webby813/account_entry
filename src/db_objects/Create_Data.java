@@ -170,8 +170,8 @@ public class Create_Data {
 
             pstmt.setTimestamp(1, time);
             pstmt.setTimestamp(2, chequeDate);
-            pstmt.setString(3, transaction_with);
-            pstmt.setString(4, account);
+            pstmt.setString(3, account);
+            pstmt.setString(4, transaction_with);
             pstmt.setString(5, tranx_Type);
             pstmt.setString(6, narration);
             pstmt.setInt(7, cheque_No);
