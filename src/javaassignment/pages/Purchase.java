@@ -3,27 +3,59 @@ package javaassignment.pages;
 import db_objects.Create_Data;
 import db_objects.CustomTableModel;
 import db_objects.Retrieve_Data;
+import static db_objects.Retrieve_Data.fetchNextNumber;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import javaassignment.UserRole;
+import static javaassignment.UserRole.ACCOUNTANT;
+import static javaassignment.UserRole.AUDITOR;
 import javax.swing.JOptionPane;
 
 public class Purchase extends javax.swing.JFrame {
     Timestamp currentTime;
-    public Purchase() {
+    private UserRole userRole;
+    private int currentVoucherNo;
+    private int nextVoucherNo;
+    private String formattedDate;
+    
+    public Purchase(UserRole role) {
         initComponents();
-        purchase_Date.setEditable(false);
-        Purchase_Table.setModel(new CustomTableModel());
+        this.userRole = role;
+        permissionDistribute(role);
         
         currentTime = new Timestamp(System.currentTimeMillis());
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String formattedDate = dateFormat.format(currentTime);
+        formattedDate = dateFormat.format(currentTime);
+        
+        purchase_Date.setEditable(false);
+        Purchase_Table.setModel(new CustomTableModel());
+
         purchase_Date.setText(formattedDate);
         cheque_Date.setText(formattedDate);
         voucher_No.setEditable(false);
         purchase_Date.setEditable(false);
         
+        nextVoucherNo = fetchNextNumber("purchase", "voucher_No");
+        currentVoucherNo = nextVoucherNo;
+        voucher_No.setText(String.valueOf(nextVoucherNo));
+        
         populateLedgerList();
+    }
+    
+    private void permissionDistribute(UserRole role){
+        switch(role){
+            case AUDITOR -> {
+                auditorCantVisit();
+            }
+            case ACCOUNTANT -> {
+            }
+            default -> System.out.println("Empty");
+        }
+    }
+    
+    private void auditorCantVisit(){
+        Save.setVisible(false);
     }
     
     private void populateLedgerList() {
@@ -33,6 +65,52 @@ public class Purchase extends javax.swing.JFrame {
         for (String ledger : ledgers) {
             transaction_with.addItem(ledger);
         }
+    }
+    
+    private void populateFieldsWithVoucherData(int voucherNo) {
+        Retrieve_Data retrieveData = new Retrieve_Data();
+        List<String> voucherData = retrieveData.fetchPurchaseData(voucherNo);
+        if (!voucherData.isEmpty()) {
+            purchase_Date.setText(voucherData.get(0));
+            voucher_No.setText(voucherData.get(1));
+            tranx_Type.setSelectedItem(voucherData.get(2));
+            fromAccount.setSelectedItem(voucherData.get(3));
+            transaction_with.setSelectedItem(voucherData.get(4));
+            narration.setText(voucherData.get(5));
+            cheque_No.setText(voucherData.get(7));
+            cheque_No.setText(voucherData.get(8));
+
+            purchase_Date.setEditable(false);
+            voucher_No.setEditable(false);
+            tranx_Type.setEnabled(false);
+            fromAccount.setEnabled(false);
+            transaction_with.setEnabled(false);
+            narration.setEditable(false);
+            cheque_No.setEditable(false);
+            cheque_Date.setEditable(false);
+        } else {
+            JOptionPane.showMessageDialog(this, "No data found for voucher number: " + voucherNo, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+        
+    private void clearFields() {
+        purchase_Date.setText(formattedDate);
+        voucher_No.setText(String.valueOf(currentVoucherNo));
+        tranx_Type.setSelectedIndex(0);
+        fromAccount.setSelectedIndex(0);
+        transaction_with.setSelectedIndex(0);
+        narration.setText("");
+        cheque_No.setText("");
+        cheque_Date.setText(formattedDate);
+
+        purchase_Date.setEditable(false);
+        voucher_No.setEditable(false);
+        tranx_Type.setEnabled(true);
+        fromAccount.setEnabled(true);
+        transaction_with.setEnabled(true);
+        narration.setEditable(true);
+        cheque_No.setEditable(true);
+        cheque_Date.setEditable(true);
     }
 
     @SuppressWarnings("unchecked")
@@ -47,8 +125,8 @@ public class Purchase extends javax.swing.JFrame {
         narration = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         cheque_No = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        PreviousBtn = new javax.swing.JButton();
+        NextBtn = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         Save = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
@@ -70,7 +148,6 @@ public class Purchase extends javax.swing.JFrame {
         jTextField8.setText("jTextField8");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(865, 662));
 
         jLabel7.setText("Transaction with");
 
@@ -91,14 +168,21 @@ public class Purchase extends javax.swing.JFrame {
 
         jLabel8.setText("Chq No.");
 
-        jButton1.setText("<");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        PreviousBtn.setText("<");
+        PreviousBtn.setPreferredSize(new java.awt.Dimension(50, 23));
+        PreviousBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                PreviousBtnActionPerformed(evt);
             }
         });
 
-        jButton2.setText(">");
+        NextBtn.setText(">");
+        NextBtn.setPreferredSize(new java.awt.Dimension(50, 23));
+        NextBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                NextBtnActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("Purchase Date");
 
@@ -176,9 +260,9 @@ public class Purchase extends javax.swing.JFrame {
                                     .addComponent(total, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jButton1)
+                                .addComponent(PreviousBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton2)
+                                .addComponent(NextBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(Save)
                                 .addGap(18, 18, 18)
@@ -258,8 +342,8 @@ public class Purchase extends javax.swing.JFrame {
                     .addComponent(cheque_Date, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(33, 33, 33)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2)
+                    .addComponent(PreviousBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(NextBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Save)
                     .addComponent(jButton4)
                     .addComponent(jButton5))
@@ -269,9 +353,14 @@ public class Purchase extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void PreviousBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PreviousBtnActionPerformed
+        if (currentVoucherNo > 1) {
+            currentVoucherNo--;
+            populateFieldsWithVoucherData(currentVoucherNo);
+        } else {
+            JOptionPane.showMessageDialog(this, "This is the first invoice", "Info", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_PreviousBtnActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         this.dispose();
@@ -319,25 +408,35 @@ public class Purchase extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_SaveActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
+    private void NextBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NextBtnActionPerformed
+        if (currentVoucherNo < nextVoucherNo - 1) {
+            currentVoucherNo++;
+            populateFieldsWithVoucherData(currentVoucherNo);
+        } else if (currentVoucherNo == nextVoucherNo - 1) {
+            currentVoucherNo++;
+            clearFields();
+        } else {
+            JOptionPane.showMessageDialog(this, "This is the latest invoice.");
+        }
+    }//GEN-LAST:event_NextBtnActionPerformed
+
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Purchase().setVisible(true);
+                UserRole role = UserRole.AUDITOR;
+                new Purchase(role).setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton NextBtn;
+    private javax.swing.JButton PreviousBtn;
     private javax.swing.JTable Purchase_Table;
     private javax.swing.JButton Save;
     private javax.swing.JTextField cheque_Date;
     private javax.swing.JTextField cheque_No;
     private javax.swing.JComboBox<String> fromAccount;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;

@@ -9,7 +9,6 @@ public class Home extends javax.swing.JFrame {
 
     public Home(UserRole role) {
         this.userRole = role;
-        System.out.println("UserRole received: " + this.userRole);
         initComponents();
         permissionDistribute(role);
     }
@@ -37,7 +36,6 @@ public class Home extends javax.swing.JFrame {
     private void auditorCantVisit(){
         PmtPageBtn.setVisible(false);
         ReceivePageBtn.setVisible(false);
-        ///Another one is LedgerList allowed to visit but not add button
     }
 
     @SuppressWarnings("unchecked")
@@ -259,7 +257,7 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_LedgerLPageBtnActionPerformed
 
     private void LedgerGPageBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LedgerGPageBtnActionPerformed
-        JFrame route = new javaassignment.pages.LedgerGroup();
+        JFrame route = new javaassignment.pages.LedgerGroup(userRole);
         route.setVisible(true);
     }//GEN-LAST:event_LedgerGPageBtnActionPerformed
 
@@ -269,22 +267,22 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_ReportPageBtnActionPerformed
 
     private void InvoicePageBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InvoicePageBtnActionPerformed
-        JFrame route = new javaassignment.pages.Invoice();
+        JFrame route = new javaassignment.pages.Invoice(userRole);
         route.setVisible(true);
     }//GEN-LAST:event_InvoicePageBtnActionPerformed
 
     private void PurchasePageBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PurchasePageBtnActionPerformed
-        JFrame route = new javaassignment.pages.Purchase();
+        JFrame route = new javaassignment.pages.Purchase(userRole);
         route.setVisible(true);
     }//GEN-LAST:event_PurchasePageBtnActionPerformed
 
     private void ItemsPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ItemsPageActionPerformed
-        JFrame route = new javaassignment.pages.Items();
+        JFrame route = new javaassignment.pages.Items(userRole);
         route.setVisible(true);
     }//GEN-LAST:event_ItemsPageActionPerformed
 
     private void ItemGrpPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ItemGrpPageActionPerformed
-        JFrame route = new javaassignment.pages.Items();
+        JFrame route = new javaassignment.pages.ItemGroup(userRole);
         route.setVisible(true);
     }//GEN-LAST:event_ItemGrpPageActionPerformed
 

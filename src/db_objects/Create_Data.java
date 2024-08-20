@@ -46,7 +46,6 @@ public class Create_Data {
             return false;
         }
         String sql = "INSERT INTO voucher(voucher_Type, posting_Date, ledger_Name, transfer_Type, cheque_No, cheque_Date, narration, amount) VALUES(?,?,?,?,?,?,?,?)";
-
         try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/acc_entry", "root", "");
              PreparedStatement pstmt = con.prepareStatement(sql)) {
 
@@ -102,6 +101,42 @@ public class Create_Data {
             return false;
         }
     }
+    
+    public boolean CreateItemGroup(String group_Name) {
+        String sql = "INSERT INTO inventory (item_Name, item_Group) VALUES (?,?)";
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/acc_entry", "root", "");
+             PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+            pstmt.setString(1, group_Name); 
+            pstmt.setString(2, group_Name);
+            int rowsInserted = pstmt.executeUpdate();
+            System.out.println(rowsInserted + " record inserted");
+            return rowsInserted > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public boolean CreateItem(String item_Name, String item_Group, int item_quantity, float item_price) {
+        String sql = "INSERT INTO inventory (item_Name, item_Group, item_quantity, item_price) VALUES (?,?,?,?)";
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/acc_entry", "root", "");
+             PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+            pstmt.setString(1, item_Name); 
+            pstmt.setString(2, item_Group);
+            pstmt.setInt(3, item_quantity);
+            pstmt.setFloat(4, item_price);
+            int rowsInserted = pstmt.executeUpdate();
+            System.out.println(rowsInserted + " record inserted");
+            return rowsInserted > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     public boolean SaveInvoiceRecord(Timestamp time, Timestamp chequeDate, String invoiceType, String account, String transactionWith, String narration, String receiveType, int chequeNo, int total) {
         String sql = "INSERT INTO invoice(date, invoice_Type, account, transaction_with, narration, receive_Type, total, cheque_Date, cheque_No) VALUES(?,?,?,?,?,?,?,?,?)";
@@ -135,8 +170,8 @@ public class Create_Data {
 
             pstmt.setTimestamp(1, time);
             pstmt.setTimestamp(2, chequeDate);
-            pstmt.setString(3, transaction_with);
-            pstmt.setString(4, account);
+            pstmt.setString(3, account);
+            pstmt.setString(4, transaction_with);
             pstmt.setString(5, tranx_Type);
             pstmt.setString(6, narration);
             pstmt.setInt(7, cheque_No);
