@@ -4,12 +4,19 @@
  */
 package javaassignment.pages;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import javaassignment.Home;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author webby
  */
 public class CompanyInfo extends javax.swing.JFrame {
-
+    private Connection con;
     /**
      * Creates new form CompanyInfo
      */
@@ -31,15 +38,14 @@ public class CompanyInfo extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        companyEdit = new javax.swing.JTextField();
+        addressEdit = new javax.swing.JTextField();
+        mobileEdit = new javax.swing.JTextField();
+        emailEdit = new javax.swing.JTextField();
+        close = new javax.swing.JButton();
+        save = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(600, 400));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel1.setText("Company Info");
@@ -52,22 +58,25 @@ public class CompanyInfo extends javax.swing.JFrame {
 
         jLabel5.setText("Email");
 
-        jTextField1.setText("jTextField1");
-
-        jTextField2.setText("jTextField2");
-
-        jTextField3.setText("jTextField3");
-
-        jTextField4.setText("jTextField4");
-
-        jButton1.setText("Close");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        companyEdit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                companyEditActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Save");
+        close.setText("Close");
+        close.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                closeActionPerformed(evt);
+            }
+        });
+
+        save.setText("Save");
+        save.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -82,9 +91,9 @@ public class CompanyInfo extends javax.swing.JFrame {
                         .addGap(135, 135, 135)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton2)
+                                .addComponent(save)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton1))
+                                .addComponent(close))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE)
@@ -93,10 +102,10 @@ public class CompanyInfo extends javax.swing.JFrame {
                                     .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
-                                    .addComponent(jTextField2)
-                                    .addComponent(jTextField3)
-                                    .addComponent(jTextField4))))))
+                                    .addComponent(companyEdit, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                                    .addComponent(addressEdit)
+                                    .addComponent(mobileEdit)
+                                    .addComponent(emailEdit))))))
                 .addContainerGap(76, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -107,33 +116,71 @@ public class CompanyInfo extends javax.swing.JFrame {
                 .addGap(40, 40, 40)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(companyEdit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(addressEdit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(mobileEdit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(emailEdit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(43, 43, 43)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(close)
+                    .addComponent(save))
                 .addContainerGap(85, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void closeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeActionPerformed
         this.dispose();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_closeActionPerformed
 
+    private void companyEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_companyEditActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_companyEditActionPerformed
+
+    private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
+        String companyName = companyEdit.getText();
+        String address = addressEdit.getText();
+        String mobile = mobileEdit.getText();
+        String email = emailEdit.getText();
+
+        try {
+            // Establish database connection
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/acc_entry", "root", "");
+
+            // Update query using the company name as the identifier
+            String query = "UPDATE companyinfo SET address = ?, telephone = ?, company_email = ? WHERE company_Name = ?";
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setString(1, address);
+            pstmt.setString(2, mobile);
+            pstmt.setString(3, email);
+            pstmt.setString(4, companyName); // Assuming companyName is unique
+
+            int rowsUpdated = pstmt.executeUpdate();
+            if (rowsUpdated > 0) {
+                JOptionPane.showMessageDialog(this, "Company information updated successfully.");
+            } else {
+                JOptionPane.showMessageDialog(this, "No company information found with the given name.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to update company information.");
+        } finally {
+            try { con.close(); } catch (SQLException e) { e.printStackTrace(); }
+        }
+    }//GEN-LAST:event_saveActionPerformed
+    
+ 
     /**
      * @param args the command line arguments
      */
@@ -170,16 +217,16 @@ public class CompanyInfo extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JTextField addressEdit;
+    private javax.swing.JButton close;
+    private javax.swing.JTextField companyEdit;
+    private javax.swing.JTextField emailEdit;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
+    private javax.swing.JTextField mobileEdit;
+    private javax.swing.JButton save;
     // End of variables declaration//GEN-END:variables
 }

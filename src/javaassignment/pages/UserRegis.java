@@ -190,37 +190,45 @@ public class UserRegis extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     
     private void confirmButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmButtonActionPerformed
-        String username = Name.getText();
-        String password = new String(Pass.getPassword());
-        String confirmPassword = new String(ConfirmPass.getPassword());
+        String username = Name.getText().trim();
+        String password = new String(Pass.getPassword()).trim();
+        String confirmPassword = new String(ConfirmPass.getPassword()).trim();
         String role = Roles.getSelectedItem().toString();
-        String phone = Phone.getText();
-        String email = Email.getText();
+        String phone = Phone.getText().trim();
+        String email = Email.getText().trim();
 
-        if (password.equals(confirmPassword)) {
-            try {
-                db_objects.AddUser addUser = new db_objects.AddUser();
-                if (addUser.insertUser(username, password, role, phone, email)) {
-                    fetchUserData(); // Refresh the table data
-                    JOptionPane.showMessageDialog(this, "User created successfully!");
+        // Check if any of the fields are empty
+        if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || role.isEmpty() || phone.isEmpty() || email.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill in all fields!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-                    // Clear the input fields
-                    Name.setText("");
-                    Pass.setText("");
-                    ConfirmPass.setText("");
-                    Roles.setSelectedIndex(0);
-                    Phone.setText("");
-                    Email.setText("");
-
-                } else {
-                    JOptionPane.showMessageDialog(this, "Failed to create user!", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (ClassNotFoundException | SQLException e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Database error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        } else {
+        // Check if passwords match
+        if (!password.equals(confirmPassword)) {
             JOptionPane.showMessageDialog(this, "Passwords do not match!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            db_objects.AddUser addUser = new db_objects.AddUser();
+            if (addUser.insertUser(username, password, role, phone, email)) {
+                fetchUserData(); // Refresh the table data
+                JOptionPane.showMessageDialog(this, "User created successfully!");
+
+                // Clear the input fields
+                Name.setText("");
+                Pass.setText("");
+                ConfirmPass.setText("");
+                Roles.setSelectedIndex(0);
+                Phone.setText("");
+                Email.setText("");
+
+            } else {
+                JOptionPane.showMessageDialog(this, "Failed to create user!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Database error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_confirmButtonActionPerformed
 
