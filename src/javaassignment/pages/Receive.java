@@ -3,10 +3,16 @@ package javaassignment.pages;
 import db_objects.Create_Data;
 import db_objects.Retrieve_Data;
 import static db_objects.Retrieve_Data.fetchNextNumber;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.swing.JOptionPane;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class Receive extends javax.swing.JFrame {
     Timestamp currentTime;
@@ -87,6 +93,62 @@ public class Receive extends javax.swing.JFrame {
         narration.setEditable(true);
         amount.setEditable(true);
     }
+    
+        private void exportTableToExcel() {
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Invoice Data");
+
+        // Create header information
+        Row headerInfoRow1 = sheet.createRow(0);
+        headerInfoRow1.createCell(0).setCellValue("Voucher No");
+        headerInfoRow1.createCell(1).setCellValue(voucher_No.getText());
+
+        Row headerInfoRow2 = sheet.createRow(1);
+        headerInfoRow2.createCell(0).setCellValue("Voucher Type");
+        headerInfoRow2.createCell(1).setCellValue(voucher_Type.getSelectedItem().toString());
+
+        Row headerInfoRow3 = sheet.createRow(2);
+        headerInfoRow3.createCell(0).setCellValue("Posting Date");
+        headerInfoRow3.createCell(1).setCellValue(posting_Date.getText().toString());
+
+        Row headerInfoRow4 = sheet.createRow(3);
+        headerInfoRow4.createCell(0).setCellValue("From ");
+        headerInfoRow4.createCell(1).setCellValue(ledger_list.getSelectedItem().toString());
+
+        Row headerInfoRow5 = sheet.createRow(4);
+        headerInfoRow5.createCell(0).setCellValue("Amount");
+        headerInfoRow5.createCell(1).setCellValue(amount.getText());
+
+        Row headerInfoRow6 = sheet.createRow(5);
+        headerInfoRow6.createCell(0).setCellValue("Transfer type");
+        headerInfoRow6.createCell(1).setCellValue(transfer_Type.getSelectedItem().toString());
+
+        Row headerInfoRow7 = sheet.createRow(6);
+        headerInfoRow7.createCell(0).setCellValue("Cheque No");
+        headerInfoRow7.createCell(1).setCellValue(cheque_No.getText());
+
+        Row headerInfoRow8 = sheet.createRow(7);
+        headerInfoRow8.createCell(0).setCellValue("Cheque Date");
+        headerInfoRow8.createCell(1).setCellValue(cheque_Date.getText());
+
+        Row headerInfoRow9 = sheet.createRow(8);
+        headerInfoRow9.createCell(0).setCellValue("Narration");
+        headerInfoRow9.createCell(1).setCellValue(narration.getText());
+
+        // Export to Excel file
+        try (FileOutputStream fileOut = new FileOutputStream("Payment Voucher.xlsx")) {
+            workbook.write(fileOut);
+            JOptionPane.showMessageDialog(this, "Data exported successfully to InvoiceData.xlsx", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error occurred while exporting data to Excel", "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            try {
+                workbook.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -98,8 +160,7 @@ public class Receive extends javax.swing.JFrame {
         jLabel11 = new javax.swing.JLabel();
         amount = new javax.swing.JTextField();
         submit = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        Export = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -131,9 +192,12 @@ public class Receive extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("Preview");
-
-        jButton4.setText("Refresh");
+        Export.setText("Export");
+        Export.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ExportActionPerformed(evt);
+            }
+        });
 
         jButton5.setBackground(new java.awt.Color(255, 51, 51));
         jButton5.setForeground(new java.awt.Color(255, 255, 255));
@@ -235,25 +299,25 @@ public class Receive extends javax.swing.JFrame {
                                                 .addComponent(PreviousBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addGap(18, 18, 18)
                                                 .addComponent(NextBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(0, 0, Short.MAX_VALUE))
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(submit))
                                             .addComponent(narration))))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(posting_Date, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
-                                    .addComponent(amount))))))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(posting_Date, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
+                                            .addComponent(amount)))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(Export)
+                                        .addGap(110, 110, 110)))))))
                 .addContainerGap(54, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(submit)
-                .addGap(18, 18, 18)
-                .addComponent(jButton2)
-                .addGap(18, 18, 18)
-                .addComponent(jButton4)
-                .addGap(18, 18, 18)
                 .addComponent(jButton5)
                 .addGap(49, 49, 49))
         );
@@ -294,8 +358,7 @@ public class Receive extends javax.swing.JFrame {
                 .addGap(38, 38, 38)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(submit)
-                    .addComponent(jButton2)
-                    .addComponent(jButton4)
+                    .addComponent(Export)
                     .addComponent(jButton5)
                     .addComponent(PreviousBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(NextBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -368,6 +431,10 @@ public class Receive extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_NextBtnActionPerformed
 
+    private void ExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExportActionPerformed
+        exportTableToExcel();
+    }//GEN-LAST:event_ExportActionPerformed
+
 
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -378,13 +445,12 @@ public class Receive extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Export;
     private javax.swing.JButton NextBtn;
     private javax.swing.JButton PreviousBtn;
     private javax.swing.JTextField amount;
     private javax.swing.JTextField cheque_Date;
     private javax.swing.JTextField cheque_No;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
