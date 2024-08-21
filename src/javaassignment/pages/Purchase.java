@@ -1,7 +1,9 @@
 package javaassignment.pages;
 
 import db_objects.Create_Data;
+import java.util.Arrays;
 import db_objects.CustomTableModel;
+import db_objects.PurchaseItemDAO;
 import db_objects.Retrieve_Data;
 import static db_objects.Retrieve_Data.fetchNextNumber;
 import java.sql.Timestamp;
@@ -28,8 +30,32 @@ public class Purchase extends javax.swing.JFrame {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         formattedDate = dateFormat.format(currentTime);
         
+        
         purchase_Date.setEditable(false);
         Purchase_Table.setModel(new CustomTableModel());
+        
+        // Add the TableModelListener to calculate totals
+
+        Purchase_Table.getModel().addTableModelListener(e -> {
+            if (e.getColumn() == 1 || e.getColumn() == 2) { // Quantity or Price Per Item column
+                int row = e.getFirstRow();
+                Object quantityObj = Purchase_Table.getValueAt(row, 1);
+                Object priceObj = Purchase_Table.getValueAt(row, 2);
+
+                // Check for null values before proceeding
+                if (quantityObj != null && priceObj != null) {
+                    try {
+                        int quantity = Integer.parseInt(quantityObj.toString());
+                        float pricePerItem = Float.parseFloat(priceObj.toString());
+                        float total = quantity * pricePerItem;
+                        Purchase_Table.setValueAt(total, row, 3);
+                    } catch (NumberFormatException nfe) {
+                        JOptionPane.showMessageDialog(this, "Invalid input. Please enter numeric values for quantity and price.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
+
 
         purchase_Date.setText(formattedDate);
         cheque_Date.setText(formattedDate);
@@ -42,6 +68,9 @@ public class Purchase extends javax.swing.JFrame {
         
         populateLedgerList();
     }
+
+   
+
     
     private void permissionDistribute(UserRole role){
         switch(role){
@@ -70,6 +99,7 @@ public class Purchase extends javax.swing.JFrame {
     private void populateFieldsWithVoucherData(int voucherNo) {
         Retrieve_Data retrieveData = new Retrieve_Data();
         List<String> voucherData = retrieveData.fetchPurchaseData(voucherNo);
+        
         if (!voucherData.isEmpty()) {
             purchase_Date.setText(voucherData.get(0));
             voucher_No.setText(voucherData.get(1));
@@ -78,7 +108,7 @@ public class Purchase extends javax.swing.JFrame {
             transaction_with.setSelectedItem(voucherData.get(4));
             narration.setText(voucherData.get(5));
             cheque_No.setText(voucherData.get(7));
-            cheque_No.setText(voucherData.get(8));
+            cheque_Date.setText(voucherData.get(8));
 
             purchase_Date.setEditable(false);
             voucher_No.setEditable(false);
@@ -88,6 +118,23 @@ public class Purchase extends javax.swing.JFrame {
             narration.setEditable(false);
             cheque_No.setEditable(false);
             cheque_Date.setEditable(false);
+            
+            // Clear the table before populating new data
+            CustomTableModel model = (CustomTableModel) Purchase_Table.getModel();
+            model.setRowCount(0);
+
+            // Fetch the items associated with the voucher
+            List<String[]> items = retrieveData.fetchPurchaseItems(voucherNo);
+
+            System.out.println("Purchase Items: " + Arrays.deepToString(items.toArray())); // Debugging statement
+
+            // Populate the table with the fetched items
+            for (String[] item : items) {
+                model.addRow(new Object[]{item[0], item[1], item[2], item[3]});
+            }
+
+            // Add an extra empty row
+            model.addRow(new Object[]{"", "", "", ""});
         } else {
             JOptionPane.showMessageDialog(this, "No data found for voucher number: " + voucherNo, "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -370,43 +417,91 @@ public class Purchase extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_purchase_DateActionPerformed
 
-    private void SaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveActionPerformed
+    private void SaveActionPerformed(java.awt.event.ActionEvent evt) {
         String tranxType = tranx_Type.getSelectedItem().toString();
         String account = fromAccount.getSelectedItem().toString();
         String transactionWith = transaction_with.getSelectedItem().toString();
         String _narration = narration.getText();
         String chequeNoText = cheque_No.getText().trim();
         String totalText = total.getText().trim();
-        
+        String voucherNoText = voucher_No.getText().trim();
+
+        if (tranxType.isEmpty() || account.isEmpty() || transactionWith.isEmpty() || _narration.isEmpty() || totalText.isEmpty() || voucherNoText.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill in all required fields.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         int chequeNo = 0;
-        int total = 0;
-        
-               try {
+        int totalAmount = 0;
+        int voucherNo = 0;
+
+        try {
             if (!chequeNoText.isEmpty()) {
                 chequeNo = Integer.parseInt(chequeNoText);
             }
             if (!totalText.isEmpty()) {
-                total = Integer.parseInt(totalText);
+                totalAmount = Integer.parseInt(totalText);
+            }
+            if (!voucherNoText.isEmpty()) {
+                voucherNo = Integer.parseInt(voucherNoText);
             }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Invalid input format. Please enter valid numbers for cheque number and amount.", "Validation Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
-        if (tranxType.isEmpty() || account.isEmpty() || totalText.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please fill in all required fields.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+
+        PurchaseItemDAO purchaseItemDAO = new PurchaseItemDAO();
+        boolean atLeastOneRowFilled = false;
+        boolean allInserted = true;
+
+        for (int i = 0; i < Purchase_Table.getRowCount(); i++) {
+            Object itemNameObj = Purchase_Table.getValueAt(i, 0);
+            Object quantityObj = Purchase_Table.getValueAt(i, 1);
+            Object pricePerItemObj = Purchase_Table.getValueAt(i, 2);
+            Object totalForItemObj = Purchase_Table.getValueAt(i, 3);
+
+            if (itemNameObj != null && !itemNameObj.toString().isEmpty() &&
+                quantityObj != null && !quantityObj.toString().isEmpty() &&
+                pricePerItemObj != null && !pricePerItemObj.toString().isEmpty() &&
+                totalForItemObj != null && !totalForItemObj.toString().isEmpty()) {
+
+                atLeastOneRowFilled = true;
+
+                try {
+                    String itemName = itemNameObj.toString();
+                    int quantity = Integer.parseInt(quantityObj.toString());
+                    float pricePerItem = Float.parseFloat(pricePerItemObj.toString());
+                    float totalForItem = Float.parseFloat(totalForItemObj.toString());
+
+                    boolean inserted = purchaseItemDAO.SavePurchaseItem(voucherNo, itemName, quantity, pricePerItem, totalForItem, transactionWith);
+
+                    if (!inserted) {
+                        allInserted = false;
+                        JOptionPane.showMessageDialog(this, "Failed to save item: " + itemName, "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(this, "Invalid data in row " + (i + 1), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+
+        if (!atLeastOneRowFilled) {
+            JOptionPane.showMessageDialog(this, "Please fill at least one row in the table.", "Validation Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
-        Create_Data createData = new Create_Data();
-        boolean success = createData.SavePurchaseRecord(currentTime, currentTime, account, transactionWith, tranxType, _narration, chequeNo, total);
-        
-        if (success) {
-            JOptionPane.showMessageDialog(this, "Record inserted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(this, "Failed to insert data. Please check the fields and try again.", "Insertion Error", JOptionPane.ERROR_MESSAGE);
+
+        if (allInserted) {
+            Create_Data createData = new Create_Data();
+            boolean success = createData.SavePurchaseRecord(currentTime, currentTime, account, transactionWith, tranxType, _narration, chequeNo, totalAmount, voucherNo);
+
+            if (success) {
+                JOptionPane.showMessageDialog(this, "Purchase saved successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                clearFields();
+            } else {
+                JOptionPane.showMessageDialog(this, "Failed to save the purchase. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
-    }//GEN-LAST:event_SaveActionPerformed
+    }
 
     private void NextBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NextBtnActionPerformed
         if (currentVoucherNo < nextVoucherNo - 1) {

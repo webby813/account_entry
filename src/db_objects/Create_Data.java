@@ -6,6 +6,45 @@ import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 
 public class Create_Data {
+    
+    public boolean SaveInvoiceItem(int voucherNo, String itemName, int quantity, float pricePerItem, float totalForItem) {
+        String sql = "INSERT INTO invoice_item (voucher_no, item_name, quantity, price_per_item, total) VALUES (?, ?, ?, ?, ?)";
+
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/acc_entry", "root", "");
+            PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setInt(1, voucherNo);
+            pstmt.setString(2, itemName);
+            pstmt.setInt(3, quantity);
+            pstmt.setFloat(4, pricePerItem);
+            pstmt.setFloat(5, totalForItem);
+
+            pstmt.executeUpdate();
+            return true;
+        } catch (Exception e) {
+                System.out.println("Database error: " + e.getMessage());
+                return false;
+            }
+    }
+    
+    public boolean SavePurchaseItem(int voucherNo, String itemName, int quantity, float pricePerItem, float totalForItem) {
+        String sql = "INSERT INTO Purchase_item (voucher_no, item_name, quantity, price_per_item, total) VALUES (?, ?, ?, ?, ?)";
+
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/acc_entry", "root", "");
+            PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setInt(1, voucherNo);
+            pstmt.setString(2, itemName);
+            pstmt.setInt(3, quantity);
+            pstmt.setFloat(4, pricePerItem);
+            pstmt.setFloat(5, totalForItem);
+
+            pstmt.executeUpdate();
+            return true;
+        } catch (Exception e) {
+                System.out.println("Database error: " + e.getMessage());
+                return false;
+            }
+    }
+
 
     private boolean isNullOrEmpty(String value) {
         return value == null || value.trim().isEmpty();
@@ -138,8 +177,9 @@ public class Create_Data {
         }
     }
 
-    public boolean SaveInvoiceRecord(Timestamp time, Timestamp chequeDate, String invoiceType, String account, String transactionWith, String narration, String receiveType, int chequeNo, int total) {
-        String sql = "INSERT INTO invoice(date, invoice_Type, account, transaction_with, narration, receive_Type, total, cheque_Date, cheque_No) VALUES(?,?,?,?,?,?,?,?,?)";
+    public boolean SaveInvoiceRecord(Timestamp time, Timestamp chequeDate, String invoiceType, String account, String transactionWith, String narration, String receiveType, int chequeNo, int total, int voucherNo) {
+        String sql = "INSERT INTO invoice(date, invoice_Type, account, transaction_with, narration, receive_Type, total, cheque_Date, cheque_No, voucher_No) VALUES(?,?,?,?,?,?,?,?,?,?)";
+        
         try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/acc_entry", "root", "");
              PreparedStatement pstmt = con.prepareStatement(sql)) {
 
@@ -152,6 +192,7 @@ public class Create_Data {
             pstmt.setInt(7, total);
             pstmt.setTimestamp(8, chequeDate);
             pstmt.setInt(9, chequeNo);
+            pstmt.setInt(10, voucherNo);
 
             int rowsInserted = pstmt.executeUpdate();
             System.out.println(rowsInserted + " record inserted");
@@ -163,8 +204,8 @@ public class Create_Data {
         }
     }
     
-    public boolean SavePurchaseRecord(Timestamp time, Timestamp chequeDate, String account, String transaction_with, String tranx_Type, String narration, int cheque_No, int total) {
-        String sql = "INSERT INTO purchase(date, cheque_Date, account, transaction_with, tranx_Type, narration, cheque_No, total) VALUES(?,?,?,?,?,?,?,?)";
+    public boolean SavePurchaseRecord(Timestamp time, Timestamp chequeDate, String account, String transaction_with, String tranx_Type, String narration, int cheque_No, int total, int voucherNo) {
+        String sql = "INSERT INTO purchase(date, cheque_Date, account, transaction_with, tranx_Type, narration, cheque_No, total, voucher_No) VALUES(?,?,?,?,?,?,?,?,?)";
         try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/acc_entry", "root", "");
              PreparedStatement pstmt = con.prepareStatement(sql)) {
 
@@ -176,6 +217,7 @@ public class Create_Data {
             pstmt.setString(6, narration);
             pstmt.setInt(7, cheque_No);
             pstmt.setInt(8, total);
+            pstmt.setInt(9, voucherNo);
 
             int rowsInserted = pstmt.executeUpdate();
             System.out.println(rowsInserted + " record inserted");

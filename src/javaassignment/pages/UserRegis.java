@@ -4,6 +4,9 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class UserRegis extends javax.swing.JFrame {
 
@@ -12,7 +15,6 @@ public class UserRegis extends javax.swing.JFrame {
         initComponents();
     }
 
-    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -57,7 +59,7 @@ public class UserRegis extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Username", "Role", "Password"
+                "Username", "Role", "Password", "Phone", "Email"
             }
         ));
         jScrollPane1.setViewportView(userTable);
@@ -146,22 +148,31 @@ public class UserRegis extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void confirmButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmButtonActionPerformed
-        // TODO add your handling code here:
         String username = Name.getText();
         String password = new String(Pass.getPassword());
         String confirmPassword = new String(ConfirmPass.getPassword());
         String role = Roles.getSelectedItem().toString();
 
         if (password.equals(confirmPassword)) {
-            DefaultTableModel model = (DefaultTableModel) userTable.getModel();
-            model.addRow(new Object[]{username, role, password});
-            JOptionPane.showMessageDialog(this, "User created successfully!");
+            try {
+                db_objects.AddUser addUser = new db_objects.AddUser();
+                if (addUser.insertUser(username, password, role)) {
+                    DefaultTableModel model = (DefaultTableModel) userTable.getModel();
+                    model.addRow(new Object[]{username, role, password});
+                    JOptionPane.showMessageDialog(this, "User created successfully!");
 
-            // Clear the input fields
-            Name.setText("");
-            Pass.setText("");
-            ConfirmPass.setText("");
-            Roles.setSelectedIndex(0);
+                    // Clear the input fields
+                    Name.setText("");
+                    Pass.setText("");
+                    ConfirmPass.setText("");
+                    Roles.setSelectedIndex(0);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to create user!", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Database error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
         } else {
             JOptionPane.showMessageDialog(this, "Passwords do not match!", "Error", JOptionPane.ERROR_MESSAGE);
         }
