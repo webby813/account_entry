@@ -10,6 +10,41 @@ import java.util.List;
 
 public class Retrieve_Data {
     
+     public List<Object[]> fetchUsers() {
+        List<Object[]> users = new ArrayList<>();
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/acc_entry", "root", "");
+            stmt = con.createStatement();
+            String query = "SELECT Name, Role, Pass, Phone, Email FROM users";
+            rs = stmt.executeQuery(query);
+
+            while (rs.next()) {
+                String username = rs.getString("Name");
+                String role = rs.getString("Role");
+                String password = rs.getString("Pass");
+                String phone = rs.getString("Phone");
+                String email = rs.getString("Email");
+                users.add(new Object[]{username, role, password, phone, email});
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+                if (con != null) con.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return users;
+    }
+    
     public List<String> fetchLedgerGroup() {
         List<String> ledgers = new ArrayList<>();
         Connection con = null;
