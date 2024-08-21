@@ -1,7 +1,9 @@
 package javaassignment.pages;
 
+import db_objects.PurchaseItemDAO;
 import db_objects.Create_Data;
 import db_objects.CustomTableModel;
+import db_objects.InvoiceItemDAO;
 import db_objects.Retrieve_Data;
 import static db_objects.Retrieve_Data.fetchNextNumber;
 import java.sql.Timestamp;
@@ -30,6 +32,28 @@ public class Invoice extends javax.swing.JFrame {
         
         date.setEditable(false);
         Invoice_Table.setModel(new CustomTableModel());
+        
+         // Add the TableModelListener to calculate totals
+
+        Invoice_Table.getModel().addTableModelListener(e -> {
+        if (e.getColumn() == 1 || e.getColumn() == 2) { // Quantity or Price Per Item column
+            int row = e.getFirstRow();
+            Object quantityObj = Invoice_Table.getValueAt(row, 1);
+            Object priceObj = Invoice_Table.getValueAt(row, 2);
+
+            if (quantityObj != null && priceObj != null) {
+                try {
+                    int quantity = Integer.parseInt(quantityObj.toString());
+                    float pricePerItem = Float.parseFloat(priceObj.toString());
+                    float total = quantity * pricePerItem;
+                    Invoice_Table.setValueAt(total, row, 3);
+                } catch (NumberFormatException nfe) {
+                    JOptionPane.showMessageDialog(this, "Invalid input. Please enter numeric values for quantity and price.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    });
+
         
         date.setText(formattedDate);
         cheque_Date.setText(formattedDate);
@@ -70,7 +94,9 @@ public class Invoice extends javax.swing.JFrame {
     private void populateFieldsWithVoucherData(int voucherNo) {
         Retrieve_Data retrieveData = new Retrieve_Data();
         List<String> voucherData = retrieveData.fetchInvoiceData(voucherNo);
+
         if (!voucherData.isEmpty()) {
+            // Populate the form fields with voucher data
             date.setText(voucherData.get(0));
             voucher_No.setText(voucherData.get(1));
             invoice_Type.setSelectedItem(voucherData.get(2));
@@ -79,8 +105,9 @@ public class Invoice extends javax.swing.JFrame {
             narration.setText(voucherData.get(5));
             receive_Type.setSelectedItem(voucherData.get(6));
             cheque_No.setText(voucherData.get(7));
-            cheque_No.setText(voucherData.get(8));
+            cheque_Date.setText(voucherData.get(8));
 
+            // Lock the fields to prevent editing
             date.setEditable(false);
             voucher_No.setEditable(false);
             invoice_Type.setEnabled(false);
@@ -90,10 +117,27 @@ public class Invoice extends javax.swing.JFrame {
             receive_Type.setEnabled(false);
             cheque_No.setEditable(false);
             cheque_Date.setEditable(false);
+
+            // Clear the table before populating new data
+            CustomTableModel model = (CustomTableModel) Invoice_Table.getModel();
+            model.setRowCount(0);
+
+            // Fetch the items associated with the voucher
+            List<String[]> items = retrieveData.fetchInvoiceItems(voucherNo);
+
+            // Populate the table with the fetched items
+            for (String[] item : items) {
+                model.addRow(new Object[]{item[0], item[1], item[2], item[3]});
+            }
+
+            // Add an extra empty row
+            model.addRow(new Object[]{"", "", "", ""});
         } else {
             JOptionPane.showMessageDialog(this, "No data found for voucher number: " + voucherNo, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+
     
     private void clearFields() {
         date.setText(formattedDate);
@@ -378,10 +422,17 @@ public class Invoice extends javax.swing.JFrame {
         String receiveType = receive_Type.getSelectedItem().toString();
         String chequeNoText = cheque_No.getText().trim();
         String totalText = total.getText().trim();
-        
+        String voucherNoText = voucher_No.getText().trim(); // Get the voucher_No from the text field
+
+        if (invoiceType.isEmpty() || account.isEmpty() || transactionWith.isEmpty() || _narration.isEmpty() || receiveType.isEmpty() || totalText.isEmpty() || voucherNoText.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill in all required fields.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         int chequeNo = 0;
         int total = 0;
-        
+        int voucherNo = 0;
+
         try {
             if (!chequeNoText.isEmpty()) {
                 chequeNo = Integer.parseInt(chequeNoText);
@@ -389,25 +440,67 @@ public class Invoice extends javax.swing.JFrame {
             if (!totalText.isEmpty()) {
                 total = Integer.parseInt(totalText);
             }
+            if (!voucherNoText.isEmpty()) {
+                voucherNo = Integer.parseInt(voucherNoText); // Parse the voucher_No
+            }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Invalid input format. Please enter valid numbers for cheque number and amount.", "Validation Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
-        if (invoiceType.isEmpty() || account.isEmpty() || totalText.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please fill in all required fields.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+
+        InvoiceItemDAO invoiceItemDAO = new InvoiceItemDAO();
+        boolean atLeastOneRowFilled = false;
+
+        for (int i = 0; i < Invoice_Table.getRowCount(); i++) {
+            Object itemNameObj = Invoice_Table.getValueAt(i, 0);
+            Object quantityObj = Invoice_Table.getValueAt(i, 1);
+            Object pricePerItemObj = Invoice_Table.getValueAt(i, 2);
+            Object totalForItemObj = Invoice_Table.getValueAt(i, 3);
+
+            // Check if at least one row is filled
+            if (itemNameObj != null && quantityObj != null && pricePerItemObj != null && totalForItemObj != null) {
+                atLeastOneRowFilled = true;
+                break;
+            }
+        }
+
+        if (!atLeastOneRowFilled) {
+            JOptionPane.showMessageDialog(this, "Please fill at least one row in the table.", "Validation Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
+        for (int i = 0; i < Invoice_Table.getRowCount(); i++) {
+            Object itemNameObj = Invoice_Table.getValueAt(i, 0);
+            Object quantityObj = Invoice_Table.getValueAt(i, 1);
+            Object pricePerItemObj = Invoice_Table.getValueAt(i, 2);
+            Object totalForItemObj = Invoice_Table.getValueAt(i, 3);
+
+            if (itemNameObj != null && quantityObj != null && pricePerItemObj != null && totalForItemObj != null) {
+                String itemName = itemNameObj.toString();
+                int quantity = Integer.parseInt(quantityObj.toString());
+                float pricePerItem = Float.parseFloat(pricePerItemObj.toString());
+                float totalForItem = Float.parseFloat(totalForItemObj.toString());
+
+                boolean itemSuccess = invoiceItemDAO.SaveInvoiceItem(voucherNo, itemName, quantity, pricePerItem, totalForItem, transactionWith);
+
+                if (!itemSuccess) {
+                    JOptionPane.showMessageDialog(this, "Failed to insert item: " + itemName, "Insertion Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+        }
+
         Create_Data createData = new Create_Data();
-        boolean success = createData.SaveInvoiceRecord(currentTime, currentTime, invoiceType, account, transactionWith, _narration, receiveType, chequeNo, total);
-        
+        boolean success = createData.SaveInvoiceRecord(currentTime, currentTime, invoiceType, account, transactionWith, _narration, receiveType, chequeNo, total,voucherNo);
+
         if (success) {
-            JOptionPane.showMessageDialog(this, "Record inserted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Invoice saved successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            clearFields();
         } else {
-            JOptionPane.showMessageDialog(this, "Failed to insert data. Please check the fields and try again.", "Insertion Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Failed to save invoice.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_SaveActionPerformed
+
 
     private void NextBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NextBtnActionPerformed
         if (currentVoucherNo < nextVoucherNo - 1) {

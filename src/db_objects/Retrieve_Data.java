@@ -94,6 +94,61 @@ public class Retrieve_Data {
         return itemGroups;
     }
     
+    public List<String[]> fetchInvoiceItems(int voucherNo) {
+        List<String[]> items = new ArrayList<>();
+        String sql = "SELECT item_name, quantity, price_per_item, total FROM invoice_item WHERE voucher_no = ?";
+
+        try {
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/acc_entry", "root", "");
+            PreparedStatement pstmt = con.prepareStatement(sql);  // Removed the extra closing parenthesis
+            pstmt.setInt(1, voucherNo);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                String itemName = rs.getString("item_name");
+                String quantity = rs.getString("quantity");
+                String pricePerItem = rs.getString("price_per_item");
+                String total = rs.getString("total");
+                items.add(new String[]{itemName, quantity, pricePerItem, total});
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return items;
+    }
+
+    public List<String[]> fetchPurchaseItems(int voucherNo) {
+     List<String[]> items = new ArrayList<>();
+     String sql = "SELECT item_name, quantity, price_per_item, total FROM purchase_item WHERE voucher_no = ?";
+
+     try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/acc_entry", "root", "");
+          PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+         pstmt.setInt(1, voucherNo);
+         try (ResultSet rs = pstmt.executeQuery()) {
+             while (rs.next()) {
+                 String itemName = rs.getString("item_name");
+                 String quantity = rs.getString("quantity");
+                 String pricePerItem = rs.getString("price_per_item");
+                 String total = rs.getString("total");
+                 items.add(new String[]{itemName, quantity, pricePerItem, total});
+             }
+         }
+     } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+     System.out.println("Fetched items: " + items.size());
+     return items;
+ }
+
+
+
+
+    
     public static int fetchNextNumber(String tableName, String columnName) {
         Connection con = null;
         Statement stmt = null;

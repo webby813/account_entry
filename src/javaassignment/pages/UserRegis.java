@@ -4,6 +4,9 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class UserRegis extends javax.swing.JFrame {
 
@@ -12,7 +15,6 @@ public class UserRegis extends javax.swing.JFrame {
         initComponents();
     }
 
-    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -54,13 +56,10 @@ public class UserRegis extends javax.swing.JFrame {
 
         userTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
-                "Username", "Role", "Password"
+                "Username", "Role", "Password", "Phone", "Email"
             }
         ));
         jScrollPane1.setViewportView(userTable);
@@ -70,7 +69,7 @@ public class UserRegis extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel5.setText("Roles");
 
-        Roles.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        Roles.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Accountant", "Auditor" }));
         Roles.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 RolesActionPerformed(evt);
@@ -99,7 +98,7 @@ public class UserRegis extends javax.swing.JFrame {
                         .addGap(34, 34, 34)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(Roles, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(ConfirmPass, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
+                            .addComponent(ConfirmPass)
                             .addComponent(Name)
                             .addComponent(Pass)))
                     .addGroup(layout.createSequentialGroup()
@@ -149,16 +148,31 @@ public class UserRegis extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void confirmButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmButtonActionPerformed
-        // TODO add your handling code here:
         String username = Name.getText();
         String password = new String(Pass.getPassword());
         String confirmPassword = new String(ConfirmPass.getPassword());
         String role = Roles.getSelectedItem().toString();
 
         if (password.equals(confirmPassword)) {
-            DefaultTableModel model = (DefaultTableModel) userTable.getModel();
-            model.addRow(new Object[]{username, role});
-            JOptionPane.showMessageDialog(this, "User created successfully!");
+            try {
+                db_objects.AddUser addUser = new db_objects.AddUser();
+                if (addUser.insertUser(username, password, role)) {
+                    DefaultTableModel model = (DefaultTableModel) userTable.getModel();
+                    model.addRow(new Object[]{username, role, password});
+                    JOptionPane.showMessageDialog(this, "User created successfully!");
+
+                    // Clear the input fields
+                    Name.setText("");
+                    Pass.setText("");
+                    ConfirmPass.setText("");
+                    Roles.setSelectedIndex(0);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to create user!", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Database error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
         } else {
             JOptionPane.showMessageDialog(this, "Passwords do not match!", "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -175,27 +189,7 @@ public class UserRegis extends javax.swing.JFrame {
  
     
     public static void main(String args[]) {
-        ///COMMIT TESTING
-//        try{
-//            for(javax.swing.UIManager.LookAndFeelInfo info :javax.swing.UIManager.getInstalledLookAndFeels()){
-//                if("Nimbus".equals(info.getName())){
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    break;
-//                }
-//            }
-//        }catch(ClassNotFoundException ex){
-//            java.util.logging.Logger.getLogger(UserRegis.class.getName()).log(java.util.SEVERE,null,ex);
-//        }catch(InstantiationException ex){
-//            java.util.logging.Logger.getLogger(UserRegis.class.getName()).log(java.util.SEVERE,null,ex);
-//        }catch(IllegalAccessException ex){
-//            java.util.logging.Logger.getLogger(UserRegis.class.getName()).log(java.util.SEVERE,null,ex);
-//        }catch(javax.swing.UnsupportedLookAndFeelException ex){
-//            java.util.logging.Logger.getLogger(UserRegis.class.getName()).log(java.util.SEVERE,null,ex);
-//        }
-        
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
+        SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 new UserRegis().setVisible(true);
             }
