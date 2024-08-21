@@ -13,6 +13,11 @@ import javaassignment.UserRole;
 import static javaassignment.UserRole.ACCOUNTANT;
 import static javaassignment.UserRole.AUDITOR;
 import javax.swing.JOptionPane;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class Invoice extends javax.swing.JFrame {
     Timestamp currentTime;
@@ -136,6 +141,95 @@ public class Invoice extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "No data found for voucher number: " + voucherNo, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+    
+    private void exportTableToExcel() {
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Invoice Data");
+
+        // Create header information
+        Row headerInfoRow1 = sheet.createRow(0);
+        headerInfoRow1.createCell(0).setCellValue("Date");
+        headerInfoRow1.createCell(1).setCellValue(date.getText());
+
+        Row headerInfoRow2 = sheet.createRow(1);
+        headerInfoRow2.createCell(0).setCellValue("Voucher No");
+        headerInfoRow2.createCell(1).setCellValue(voucher_No.getText());
+
+        Row headerInfoRow3 = sheet.createRow(2);
+        headerInfoRow3.createCell(0).setCellValue("Invoice Type");
+        headerInfoRow3.createCell(1).setCellValue(invoice_Type.getSelectedItem().toString());
+
+        Row headerInfoRow4 = sheet.createRow(3);
+        headerInfoRow4.createCell(0).setCellValue("From Account");
+        headerInfoRow4.createCell(1).setCellValue(fromAccount.getSelectedItem().toString());
+
+        Row headerInfoRow5 = sheet.createRow(4);
+        headerInfoRow5.createCell(0).setCellValue("Transaction With");
+        headerInfoRow5.createCell(1).setCellValue(transaction_with.getSelectedItem().toString());
+
+        Row headerInfoRow6 = sheet.createRow(5);
+        headerInfoRow6.createCell(0).setCellValue("Narration");
+        headerInfoRow6.createCell(1).setCellValue(narration.getText());
+
+        Row headerInfoRow7 = sheet.createRow(6);
+        headerInfoRow7.createCell(0).setCellValue("Cheque No");
+        headerInfoRow7.createCell(1).setCellValue(cheque_No.getText());
+
+        Row headerInfoRow8 = sheet.createRow(7);
+        headerInfoRow8.createCell(0).setCellValue("Cheque Date");
+        headerInfoRow8.createCell(1).setCellValue(cheque_Date.getText());
+
+        Row headerInfoRow9 = sheet.createRow(8);
+        headerInfoRow9.createCell(0).setCellValue("Receive Type");
+        headerInfoRow9.createCell(1).setCellValue(receive_Type.getSelectedItem().toString());
+
+        Row headerInfoRow10 = sheet.createRow(9);
+        headerInfoRow10.createCell(0).setCellValue("Total");
+        headerInfoRow10.createCell(1).setCellValue(total.getText());
+
+        // Create a header row for table data
+        Row tableHeaderRow = sheet.createRow(11);
+        for (int i = 0; i < Invoice_Table.getColumnCount(); i++) {
+            Cell cell = tableHeaderRow.createCell(i);
+            cell.setCellValue(Invoice_Table.getColumnName(i));
+        }
+
+        // Populate the sheet with data from the table
+        for (int i = 0; i < Invoice_Table.getRowCount(); i++) {
+            Row row = sheet.createRow(i + 12);
+            for (int j = 0; j < Invoice_Table.getColumnCount(); j++) {
+                Cell cell = row.createCell(j);
+                Object value = Invoice_Table.getValueAt(i, j);
+                if (value != null) {
+                    if (value instanceof Number) {
+                        cell.setCellValue(((Number) value).doubleValue());
+                    } else {
+                        cell.setCellValue(value.toString());
+                    }
+                }
+            }
+        }
+
+        // Adjust column widths
+        for (int i = 0; i < Invoice_Table.getColumnCount(); i++) {
+            sheet.autoSizeColumn(i);
+        }
+
+        // Export to Excel file
+        try (FileOutputStream fileOut = new FileOutputStream("InvoiceData.xlsx")) {
+            workbook.write(fileOut);
+            JOptionPane.showMessageDialog(this, "Data exported successfully to InvoiceData.xlsx", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error occurred while exporting data to Excel", "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            try {
+                workbook.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
 
     
@@ -173,7 +267,7 @@ public class Invoice extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         Save = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
-        jButton4 = new javax.swing.JButton();
+        Export = new javax.swing.JButton();
         date = new javax.swing.JTextField();
         jButton5 = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
@@ -229,7 +323,12 @@ public class Invoice extends javax.swing.JFrame {
 
         jLabel3.setText("Type");
 
-        jButton4.setText("Refresh");
+        Export.setText("Export");
+        Export.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ExportActionPerformed(evt);
+            }
+        });
 
         jButton5.setBackground(new java.awt.Color(255, 51, 51));
         jButton5.setForeground(new java.awt.Color(255, 255, 255));
@@ -340,7 +439,7 @@ public class Invoice extends javax.swing.JFrame {
                                         .addGap(18, 18, 18)
                                         .addComponent(Save)
                                         .addGap(18, 18, 18)
-                                        .addComponent(jButton4)
+                                        .addComponent(Export)
                                         .addGap(18, 18, 18)
                                         .addComponent(jButton5)))))
                         .addGap(43, 43, 43))))
@@ -388,7 +487,7 @@ public class Invoice extends javax.swing.JFrame {
                     .addComponent(PreviousBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(NextBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Save)
-                    .addComponent(jButton4)
+                    .addComponent(Export)
                     .addComponent(jButton5))
                 .addGap(56, 56, 56))
         );
@@ -514,6 +613,12 @@ public class Invoice extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_NextBtnActionPerformed
 
+    private void ExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExportActionPerformed
+        
+        exportTableToExcel();
+        
+    }//GEN-LAST:event_ExportActionPerformed
+
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -524,6 +629,7 @@ public class Invoice extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Export;
     private javax.swing.JTable Invoice_Table;
     private javax.swing.JButton NextBtn;
     private javax.swing.JButton PreviousBtn;
@@ -533,7 +639,6 @@ public class Invoice extends javax.swing.JFrame {
     private javax.swing.JTextField date;
     private javax.swing.JComboBox<String> fromAccount;
     private javax.swing.JComboBox<String> invoice_Type;
-    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
