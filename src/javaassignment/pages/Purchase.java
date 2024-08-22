@@ -167,7 +167,7 @@ public class Purchase extends javax.swing.JFrame {
         cheque_Date.setEditable(true);
     }
     
-        private void exportTableToExcel() {
+    private void exportTableToExcel() {
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Purchase Data");
 
@@ -237,7 +237,7 @@ public class Purchase extends javax.swing.JFrame {
         }
 
         // Export to Excel file
-        try (FileOutputStream fileOut = new FileOutputStream("PurchaseData.xlsx")) {
+        try (FileOutputStream fileOut = new FileOutputStream("src/ExportedReport/PurchaseData.xlsx")) {
             workbook.write(fileOut);
             JOptionPane.showMessageDialog(this, "Data exported successfully to InvoiceData.xlsx", "Success", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException e) {

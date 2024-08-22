@@ -136,7 +136,7 @@ public class Receive extends javax.swing.JFrame {
         headerInfoRow9.createCell(1).setCellValue(narration.getText());
 
         // Export to Excel file
-        try (FileOutputStream fileOut = new FileOutputStream("Payment Voucher.xlsx")) {
+        try (FileOutputStream fileOut = new FileOutputStream("src/ExportedReport/Payment Voucher.xlsx")) {
             workbook.write(fileOut);
             JOptionPane.showMessageDialog(this, "Data exported successfully to InvoiceData.xlsx", "Success", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException e) {

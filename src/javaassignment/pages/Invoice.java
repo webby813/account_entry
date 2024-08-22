@@ -216,7 +216,7 @@ public class Invoice extends javax.swing.JFrame {
         }
 
         // Export to Excel file
-        try (FileOutputStream fileOut = new FileOutputStream("InvoiceData.xlsx")) {
+        try (FileOutputStream fileOut = new FileOutputStream("src/ExportedReport/InvoiceData.xlsx")) {
             workbook.write(fileOut);
             JOptionPane.showMessageDialog(this, "Data exported successfully to InvoiceData.xlsx", "Success", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException e) {
