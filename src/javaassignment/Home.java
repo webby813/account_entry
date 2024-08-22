@@ -1,14 +1,5 @@
 package javaassignment;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import static javaassignment.UserRole.ACCOUNTANT;
 import static javaassignment.UserRole.AUDITOR;
 import javax.swing.JFrame;
@@ -16,42 +7,11 @@ import javax.swing.JFrame;
 public class Home extends javax.swing.JFrame {
     private UserRole userRole;
 
-    public Home(UserRole role) throws ClassNotFoundException, SQLException {
+    public Home(UserRole role) {
         this.userRole = role;
         initComponents();
-        loadCompanyInfo();
-        setDateLabel(); // Set current date
         permissionDistribute(role);
     }
-
-    private void loadCompanyInfo() throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        try (java.sql.Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/acc_entry", "root", "")) {
-            String query = "SELECT company_Name, address, company_email, telephone FROM companyinfo";
-            try (PreparedStatement pstmt = con.prepareStatement(query)) {
-                try (ResultSet rs = pstmt.executeQuery()) {
-                    if (rs.next()) {
-                        companyName.setText(rs.getString("company_Name"));
-                        mobile.setText(rs.getString("telephone")); // Assuming you meant telephone here
-                        email.setText(rs.getString("company_email"));
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    
-    private void setDateLabel() {
-        // Get the current date
-        LocalDate currentDate = LocalDate.now();
-        // Format the date as "yyyy-MM-dd" or your preferred format
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        // Set the label's text to the current date
-        Date.setText(currentDate.format(formatter));
-    }
-
-    
     
     private void permissionDistribute(UserRole role){
         switch(role){
@@ -83,14 +43,12 @@ public class Home extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel6 = new javax.swing.JLabel();
-        label1 = new java.awt.Label();
-        jLabel7 = new javax.swing.JLabel();
         PmtPageBtn = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         ReceivePageBtn = new javax.swing.JButton();
         LedgerLPageBtn = new javax.swing.JButton();
         LedgerGPageBtn = new javax.swing.JButton();
+        ReportPageBtn = new javax.swing.JButton();
         InvoicePageBtn = new javax.swing.JButton();
         PurchasePageBtn = new javax.swing.JButton();
         ItemsPage = new javax.swing.JButton();
@@ -98,21 +56,11 @@ public class Home extends javax.swing.JFrame {
         IvtReportPageBtn = new javax.swing.JButton();
         ComPageBtn = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jButton13 = new javax.swing.JButton();
         UserRegis = new javax.swing.JButton();
-        jLabel8 = new javax.swing.JLabel();
-        companyName = new javax.swing.JLabel();
-        Date = new javax.swing.JLabel();
-        mobile = new javax.swing.JLabel();
-        email = new javax.swing.JLabel();
-
-        jLabel6.setText("jLabel6");
-
-        label1.setText("label1");
-
-        jLabel7.setText("jLabel7");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -146,6 +94,13 @@ public class Home extends javax.swing.JFrame {
         LedgerGPageBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 LedgerGPageBtnActionPerformed(evt);
+            }
+        });
+
+        ReportPageBtn.setText("Report");
+        ReportPageBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ReportPageBtnActionPerformed(evt);
             }
         });
 
@@ -195,6 +150,8 @@ public class Home extends javax.swing.JFrame {
 
         jLabel2.setText("Mobile : ");
 
+        jLabel3.setText("Telephone : ");
+
         jLabel4.setText("Email : ");
 
         jLabel5.setText("Date ");
@@ -215,14 +172,6 @@ public class Home extends javax.swing.JFrame {
             }
         });
 
-        companyName.setText("text");
-
-        Date.setText("Date");
-
-        mobile.setText("mobile");
-
-        email.setText("Email");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -231,30 +180,22 @@ public class Home extends javax.swing.JFrame {
                 .addGap(85, 85, 85)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(mobile)
-                        .addGap(220, 220, 220)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(Date)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
-                                .addComponent(email)))
-                        .addGap(61, 61, 61))
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel8)
-                                .addGap(33, 33, 33)
-                                .addComponent(companyName))
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(93, 93, 93)
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(276, 276, 276)
+                                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(ReportPageBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(LedgerGPageBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
                                 .addComponent(LedgerLPageBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(ReceivePageBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -268,7 +209,8 @@ public class Home extends javax.swing.JFrame {
                                 .addComponent(InvoicePageBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(UserRegis, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 331, Short.MAX_VALUE))))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(61, 61, 61))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -276,10 +218,7 @@ public class Home extends javax.swing.JFrame {
                 .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel8)
-                    .addComponent(companyName)
-                    .addComponent(Date))
+                    .addComponent(jLabel5))
                 .addGap(33, 33, 33)
                 .addComponent(PmtPageBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -288,7 +227,9 @@ public class Home extends javax.swing.JFrame {
                 .addComponent(LedgerLPageBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(LedgerGPageBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(56, 56, 56)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(ReportPageBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(InvoicePageBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(PurchasePageBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -307,9 +248,8 @@ public class Home extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jLabel2)
-                    .addComponent(mobile)
-                    .addComponent(email))
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel2))
                 .addGap(14, 14, 14))
         );
 
@@ -335,6 +275,11 @@ public class Home extends javax.swing.JFrame {
         JFrame route = new javaassignment.pages.LedgerGroup(userRole);
         route.setVisible(true);
     }//GEN-LAST:event_LedgerGPageBtnActionPerformed
+
+    private void ReportPageBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReportPageBtnActionPerformed
+        JFrame route = new javaassignment.pages.Report();
+        route.setVisible(true);
+    }//GEN-LAST:event_ReportPageBtnActionPerformed
 
     private void InvoicePageBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InvoicePageBtnActionPerformed
         JFrame route = new javaassignment.pages.Invoice(userRole);
@@ -380,20 +325,13 @@ public class Home extends javax.swing.JFrame {
             public void run() {
                 // Create a UserRole instance, for example, UserRole.AUDITOR
                 UserRole role = UserRole.AUDITOR;
-                try {
-                    new Home(role).setVisible(true);
-                } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SQLException ex) {
-                    Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                new Home(role).setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ComPageBtn;
-    private javax.swing.JLabel Date;
     private javax.swing.JButton InvoicePageBtn;
     private javax.swing.JButton ItemGrpPage;
     private javax.swing.JButton ItemsPage;
@@ -403,18 +341,13 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JButton PmtPageBtn;
     private javax.swing.JButton PurchasePageBtn;
     private javax.swing.JButton ReceivePageBtn;
+    private javax.swing.JButton ReportPageBtn;
     private javax.swing.JButton UserRegis;
-    private javax.swing.JLabel companyName;
-    private javax.swing.JLabel email;
     private javax.swing.JButton jButton13;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private java.awt.Label label1;
-    private javax.swing.JLabel mobile;
     // End of variables declaration//GEN-END:variables
 }
