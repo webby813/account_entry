@@ -91,7 +91,6 @@ public class Home extends javax.swing.JFrame {
         ReceivePageBtn = new javax.swing.JButton();
         LedgerLPageBtn = new javax.swing.JButton();
         LedgerGPageBtn = new javax.swing.JButton();
-        ReportPageBtn = new javax.swing.JButton();
         InvoicePageBtn = new javax.swing.JButton();
         PurchasePageBtn = new javax.swing.JButton();
         ItemsPage = new javax.swing.JButton();
@@ -147,13 +146,6 @@ public class Home extends javax.swing.JFrame {
         LedgerGPageBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 LedgerGPageBtnActionPerformed(evt);
-            }
-        });
-
-        ReportPageBtn.setText("Report");
-        ReportPageBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ReportPageBtnActionPerformed(evt);
             }
         });
 
@@ -253,7 +245,7 @@ public class Home extends javax.swing.JFrame {
                                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
                                 .addComponent(email)))
-                        .addGap(12, 12, 12))
+                        .addGap(61, 61, 61))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -263,7 +255,6 @@ public class Home extends javax.swing.JFrame {
                                 .addGap(33, 33, 33)
                                 .addComponent(companyName))
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(ReportPageBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(LedgerGPageBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
                                 .addComponent(LedgerLPageBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(ReceivePageBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -277,8 +268,7 @@ public class Home extends javax.swing.JFrame {
                                 .addComponent(InvoicePageBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(UserRegis, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(49, 49, 49))
+                        .addGap(0, 331, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -298,9 +288,7 @@ public class Home extends javax.swing.JFrame {
                 .addComponent(LedgerLPageBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(LedgerGPageBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ReportPageBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(56, 56, 56)
                 .addComponent(InvoicePageBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(PurchasePageBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -347,11 +335,6 @@ public class Home extends javax.swing.JFrame {
         JFrame route = new javaassignment.pages.LedgerGroup(userRole);
         route.setVisible(true);
     }//GEN-LAST:event_LedgerGPageBtnActionPerformed
-
-    private void ReportPageBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReportPageBtnActionPerformed
-        JFrame route = new javaassignment.pages.Report();
-        route.setVisible(true);
-    }//GEN-LAST:event_ReportPageBtnActionPerformed
 
     private void InvoicePageBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InvoicePageBtnActionPerformed
         JFrame route = new javaassignment.pages.Invoice(userRole);
@@ -420,7 +403,6 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JButton PmtPageBtn;
     private javax.swing.JButton PurchasePageBtn;
     private javax.swing.JButton ReceivePageBtn;
-    private javax.swing.JButton ReportPageBtn;
     private javax.swing.JButton UserRegis;
     private javax.swing.JLabel companyName;
     private javax.swing.JLabel email;
