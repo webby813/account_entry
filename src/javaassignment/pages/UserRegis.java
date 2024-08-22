@@ -72,6 +72,11 @@ public class UserRegis extends javax.swing.JFrame {
         jScrollPane1.setViewportView(userTable);
 
         cancelButton.setText("Cancel");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel5.setText("Roles");
@@ -268,6 +273,10 @@ public class UserRegis extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Please select a user to delete!", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_deleteButtonActionPerformed
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void fetchUserData() {
     DefaultTableModel model = (DefaultTableModel) userTable.getModel();
