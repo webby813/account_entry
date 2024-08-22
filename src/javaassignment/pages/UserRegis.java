@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 public class UserRegis extends javax.swing.JFrame {
 
@@ -36,9 +37,9 @@ public class UserRegis extends javax.swing.JFrame {
         Name = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        Email = new javax.swing.JPasswordField();
-        Phone = new javax.swing.JPasswordField();
         deleteButton = new javax.swing.JButton();
+        Email = new javax.swing.JTextField();
+        Phone = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -95,16 +96,22 @@ public class UserRegis extends javax.swing.JFrame {
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel7.setText("Phone");
 
-        Phone.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                PhoneActionPerformed(evt);
-            }
-        });
-
         deleteButton.setText("Delete");
         deleteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 deleteButtonActionPerformed(evt);
+            }
+        });
+
+        Email.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EmailActionPerformed(evt);
+            }
+        });
+
+        Phone.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PhoneActionPerformed(evt);
             }
         });
 
@@ -124,14 +131,20 @@ public class UserRegis extends javax.swing.JFrame {
                                 .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(34, 34, 34)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(Email)
-                            .addComponent(Phone)
-                            .addComponent(Roles, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(ConfirmPass)
-                            .addComponent(Name)
-                            .addComponent(Pass)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(34, 34, 34)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(Roles, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(ConfirmPass)
+                                    .addComponent(Name)
+                                    .addComponent(Pass)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(Email, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(34, 34, 34)
+                                .addComponent(Phone))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(29, 29, 29)
                         .addComponent(deleteButton)
@@ -176,7 +189,7 @@ public class UserRegis extends javax.swing.JFrame {
                         .addGap(6, 6, 6)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel6)
-                            .addComponent(Email, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(Email, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(cancelButton)
@@ -194,15 +207,49 @@ public class UserRegis extends javax.swing.JFrame {
         String password = new String(Pass.getPassword());
         String confirmPassword = new String(ConfirmPass.getPassword());
         String role = Roles.getSelectedItem().toString();
-        String phone = Phone.getText();
-        String email = Email.getText();
+        String phone = Phone.getText().trim();
+        String email = Email.getText().trim();
 
-        if (password.equals(confirmPassword)) {
-            try {
-                db_objects.AddUser addUser = new db_objects.AddUser();
-                if (addUser.insertUser(username, password, role, phone, email)) {
-                    fetchUserData(); // Refresh the table data
-                    JOptionPane.showMessageDialog(this, "User created successfully!");
+        // Regex patterns
+        String passwordPattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+        String emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
+        String phonePattern = "^\\d{10,11}$";
+
+        // Check if any of the fields are empty
+        if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || role.isEmpty() || phone.isEmpty() || email.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill in all fields!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Check if passwords match
+        if (!password.equals(confirmPassword)) {
+            JOptionPane.showMessageDialog(this, "Passwords do not match!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Validate password
+        if (!Pattern.matches(passwordPattern, password)) {
+            JOptionPane.showMessageDialog(this, "Password must be at least 8 characters long, with at least one uppercase letter, one lowercase letter, one digit, and one special character.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Validate email
+        if (!Pattern.matches(emailPattern, email)) {
+            JOptionPane.showMessageDialog(this, "Invalid email format!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Validate phone number
+        if (!Pattern.matches(phonePattern, phone)) {
+            JOptionPane.showMessageDialog(this, "Phone number must be a 10 or 11-digit number.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            db_objects.AddUser addUser = new db_objects.AddUser();
+            if (addUser.insertUser(username, password, role, phone, email)) {
+                fetchUserData(); // Refresh the table data
+                JOptionPane.showMessageDialog(this, "User created successfully!");
 
                     // Clear the input fields
                     Name.setText("");
@@ -232,10 +279,6 @@ public class UserRegis extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_NameActionPerformed
 
-    private void PhoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PhoneActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_PhoneActionPerformed
-
     private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
     int selectedRow = userTable.getSelectedRow();
         if (selectedRow != -1) {  // Make sure a row is selected
@@ -260,6 +303,14 @@ public class UserRegis extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Please select a user to delete!", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_deleteButtonActionPerformed
+
+    private void EmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EmailActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_EmailActionPerformed
+
+    private void PhoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PhoneActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_PhoneActionPerformed
 
     private void fetchUserData() {
     DefaultTableModel model = (DefaultTableModel) userTable.getModel();
@@ -288,10 +339,10 @@ public class UserRegis extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPasswordField ConfirmPass;
-    private javax.swing.JPasswordField Email;
+    private javax.swing.JTextField Email;
     private javax.swing.JTextField Name;
     private javax.swing.JPasswordField Pass;
-    private javax.swing.JPasswordField Phone;
+    private javax.swing.JTextField Phone;
     private javax.swing.JComboBox<String> Roles;
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton confirmButton;
